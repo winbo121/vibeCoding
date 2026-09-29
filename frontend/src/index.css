@@ -1,0 +1,94 @@
+:root {
+  --vc-brand: #0f766e;
+  --vc-brand-dark: #0b5f59;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(15, 118, 110, 0.16), transparent 38%),
+    radial-gradient(circle at 100% 10%, rgba(14, 116, 144, 0.12), transparent 32%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  background-attachment: fixed;
+}
+
+.navbar.vc-navbar {
+  background: linear-gradient(90deg, #0f766e 0%, #0e7490 100%) !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+.navbar.vc-navbar .navbar-brand,
+.navbar.vc-navbar .nav-link,
+.navbar.vc-navbar .navbar-text {
+  color: #fff !important;
+}
+
+.navbar.vc-navbar .nav-link {
+  border-radius: 999px;
+  padding-inline: 0.9rem !important;
+  margin-inline: 0.1rem;
+}
+
+.navbar.vc-navbar .nav-link:hover,
+.navbar.vc-navbar .nav-link.active {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.vc-page {
+  padding-block: 1.5rem 2.5rem;
+}
+
+.vc-hero {
+  background:
+    linear-gradient(135deg, rgba(15, 118, 110, 0.92), rgba(14, 116, 144, 0.88)),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  color: #fff;
+  border: 0;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.vc-hero .lead {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.vc-card {
+  border: 0;
+  border-radius: 1rem;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
+.vc-card .card-header {
+  background: #fff;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  font-weight: 700;
+}
+
+.btn-brand {
+  --bs-btn-bg: var(--vc-brand);
+  --bs-btn-border-color: var(--vc-brand);
+  --bs-btn-hover-bg: var(--vc-brand-dark);
+  --bs-btn-hover-border-color: var(--vc-brand-dark);
+  --bs-btn-active-bg: var(--vc-brand-dark);
+  --bs-btn-active-border-color: var(--vc-brand-dark);
+  --bs-btn-color: #fff;
+}
+
+.table thead th {
+  white-space: nowrap;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.86rem;
+}
+
+.file-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}

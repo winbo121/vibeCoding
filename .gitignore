@@ -1,0 +1,33 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+backend/uploads/
+
+# Env / secrets
+.env
+.env.local
+*.pem
+
+# Node / frontend
+node_modules/
+frontend/dist/
+frontend/.env.local
+
+# Local runtime tools (download separately)
+tools/downloads/
+tools/pgsql/
+tools/pgsql-data/
+tools/apache-tomcat-*/
+tools/pgpass.txt
+tools/check_*.py
+
+# Logs / OS
+*.log
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
