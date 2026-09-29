@@ -1,0 +1,65 @@
+-- VibeCoding schema (PostgreSQL 14+)
+-- Encoding: UTF8
+-- Apply inside database: vibecoding
+
+BEGIN;
+
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    name VARCHAR(100) NOT NULL DEFAULT '',
+    email VARCHAR(200),
+    role VARCHAR(20) NOT NULL DEFAULT 'user',
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS ix_users_username ON users (username);
+
+CREATE TABLE IF NOT EXISTS programs (
+    id SERIAL PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    path VARCHAR(200) NOT NULL DEFAULT '/',
+    description TEXT,
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE
+);
+CREATE INDEX IF NOT EXISTS ix_programs_code ON programs (code);
+
+CREATE TABLE IF NOT EXISTS user_programs (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    program_id INTEGER NOT NULL REFERENCES programs(id) ON DELETE CASCADE,
+    CONSTRAINT uq_user_program UNIQUE (user_id, program_id)
+);
+
+CREATE TABLE IF NOT EXISTS faqs (
+    id SERIAL PRIMARY KEY,
+    question VARCHAR(300) NOT NULL,
+    answer TEXT NOT NULL,
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    is_published BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS board_posts (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    content TEXT NOT NULL,
+    author_id INTEGER NOT NULL REFERENCES users(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS board_files (
+    id SERIAL PRIMARY KEY,
+    post_id INTEGER NOT NULL REFERENCES board_posts(id) ON DELETE CASCADE,
+    original_name VARCHAR(255) NOT NULL,
+    stored_name VARCHAR(255) NOT NULL,
+    content_type VARCHAR(120),
+    size INTEGER NOT NULL DEFAULT 0
+);
+
+COMMIT;

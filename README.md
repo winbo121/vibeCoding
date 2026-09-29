@@ -22,12 +22,29 @@ Python(FastAPI) + React + PostgreSQL + Tomcat 풀스택 CRUD 프로젝트입니�
 vibeCoding/
   backend/      FastAPI + SQLAlchemy + PostgreSQL CRUD API
   frontend/     React(Vite) CRUD UI
-  tools/
-    apache-tomcat-11.0.26/
-    pgsql/                 PostgreSQL 18.6 binaries
-    pgsql-data/            DB data directory
-  scripts/      실행/배포 스크립트
-  db/           SQL 참고
+  scripts/      실행/배포/DB 복구 스크립트
+  db/           SQL 스키마·시드·덤프
+  SETUP.md      다른 PC 설치 가이드
+```
+
+## 다른 PC에서 빠르게 세팅
+
+자세한 절차는 [SETUP.md](./SETUP.md) 참고.
+
+```powershell
+git clone https://github.com/winbo121/vibeCoding.git
+cd vibeCoding
+powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap-new-pc.ps1
+powershell -ExecutionPolicy Bypass -File .\scripts\start-backend.ps1
+powershell -ExecutionPolicy Bypass -File .\scripts\start-frontend.ps1
+```
+
+DB만 복구할 때:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\restore-db.ps1
+# 또는 전체 덤프
+powershell -ExecutionPolicy Bypass -File .\scripts\restore-db.ps1 -UseFullDump
 ```
 
 ## DB 접속 정보
