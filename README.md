@@ -39,12 +39,12 @@ powershell -ExecutionPolicy Bypass -File .\scripts\start-backend.ps1
 powershell -ExecutionPolicy Bypass -File .\scripts\start-frontend.ps1
 ```
 
-DB만 복구할 때:
+DB만 복구할 때 (현재 기준 전체 덤프 권장):
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\restore-db.ps1
-# 또는 전체 덤프
 powershell -ExecutionPolicy Bypass -File .\scripts\restore-db.ps1 -UseFullDump
+# 또는 최소 스키마+시드
+powershell -ExecutionPolicy Bypass -File .\scripts\restore-db.ps1
 ```
 
 ## DB 접속 정보

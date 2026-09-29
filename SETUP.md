@@ -30,20 +30,20 @@ powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap-new-pc.ps1
 1. `backend\.env.example` → `backend\.env` 복사
 2. Python venv + `requirements.txt` 설치
 3. `frontend` `npm install`
-4. DB `schema.sql` + `seed.sql` 적용
+4. DB `vibecoding_dump.sql` 전체 복구 (`-UseFullDump`)
 
 ## 4. DB만 수동 복구
 
-### 방식 A — 스키마 + 시드 (추천, 깨끗함)
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\restore-db.ps1
-```
-
-### 방식 B — 전체 덤프
+### 방식 A — 전체 덤프 (추천, 현재 PC와 동일 데이터)
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\restore-db.ps1 -UseFullDump
+```
+
+### 방식 B — 스키마 + 시드 (최소 초기 데이터)
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\restore-db.ps1
 ```
 
 ### psql 직접

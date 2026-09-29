@@ -19,9 +19,9 @@ INSERT INTO users (id, username, password_hash, name, email, role, is_active) VA
 INSERT INTO programs (id, code, name, path, description, sort_order, is_active) VALUES
 (1, 'USERS', '사용자관리', '/users', '사용자 CRUD', 10, TRUE),
 (2, 'USER_PROGRAMS', '메뉴관리', '/user-programs', '사용자별 메뉴 권한', 20, TRUE),
-(3, 'FAQS', 'FAQ', '/faqs', 'FAQ CRUD', 30, TRUE),
-(4, 'BOARD', '게시판', '/board', '게시판 CRUD/파일', 40, TRUE),
-(5, 'JOBS', '입사지원 찾기', '/jobs', '개발자 채용공고 조회 (샘플/공식 API)', 50, TRUE);
+(3, 'JOBS', '입사지원 찾기', '/jobs', '개발자 채용공고 조회 (샘플/공식 API)', 25, TRUE),
+(4, 'FAQS', 'FAQ', '/faqs', 'FAQ CRUD', 30, TRUE),
+(5, 'BOARD', '게시판', '/board', '게시판 CRUD/파일', 40, TRUE);
 
 -- admin: all menus / user: FAQ + BOARD + JOBS
 INSERT INTO user_programs (user_id, program_id) VALUES

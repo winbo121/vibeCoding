@@ -31,8 +31,8 @@ Set-Location (Join-Path $root "frontend")
 npm install
 Set-Location $root
 
-Write-Host "== Database restore (schema + seed) =="
-powershell -ExecutionPolicy Bypass -File (Join-Path $root "scripts\restore-db.ps1")
+Write-Host "== Database restore (full dump) =="
+powershell -ExecutionPolicy Bypass -File (Join-Path $root "scripts\restore-db.ps1") -UseFullDump
 
 Write-Host ""
 Write-Host "Bootstrap complete."

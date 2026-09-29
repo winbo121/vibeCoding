@@ -31,9 +31,10 @@ Write-Host "Exporting $Database -> $outFile"
 & $pgDump -U $PgUser -h $PgHost -p $PgPort -d $Database --no-owner --no-privileges --clean --if-exists --encoding=UTF8 -f $outFile
 
 # Remove pg_dump 18 \restrict lines for broader compatibility
-$text = [System.IO.File]::ReadAllText($outFile)
+$utf8 = [System.Text.UTF8Encoding]::new($false)
+$text = [System.IO.File]::ReadAllText($outFile, $utf8)
 $text = [regex]::Replace($text, '(?m)^\\restrict.*\r?\n', '')
 $text = [regex]::Replace($text, '(?m)^\\unrestrict.*\r?\n', '')
-[System.IO.File]::WriteAllText($outFile, $text, [System.Text.UTF8Encoding]::new($false))
+[System.IO.File]::WriteAllText($outFile, $text, $utf8)
 
 Write-Host "Done. Size:" (Get-Item $outFile).Length
