@@ -6,7 +6,9 @@ import Board from './pages/Board'
 import BoardDetail from './pages/BoardDetail'
 import Faqs from './pages/Faqs'
 import Home from './pages/Home'
+import Jobs from './pages/Jobs'
 import Login from './pages/Login'
+import Profile from './pages/Profile'
 import UserPrograms from './pages/UserPrograms'
 import Users from './pages/Users'
 
@@ -18,6 +20,14 @@ export default function App() {
           <Route element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="login" element={<Login />} />
+            <Route
+              path="profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="users"
               element={
@@ -55,6 +65,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <BoardDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="jobs"
+              element={
+                <ProtectedRoute>
+                  <Jobs />
                 </ProtectedRoute>
               }
             />

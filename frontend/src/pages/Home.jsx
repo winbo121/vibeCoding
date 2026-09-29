@@ -55,6 +55,20 @@ export default function Home() {
             </Card.Body>
           </Card>
         </Col>
+        <Col md={12}>
+          <Card className="vc-feature tone-a h-100">
+            <Card.Body className="p-4">
+              <div className="icon-blob">
+                <i className="bi bi-briefcase-fill" />
+              </div>
+              <Card.Title className="fw-bold">입사지원 찾기</Card.Title>
+              <Card.Text className="text-secondary mb-0">
+                개발자 채용공고를 리스트로 조회합니다. 샘플 데이터로 시작하며, 이후 사람인·잡코리아 공식
+                API를 같은 구조로 연결할 수 있습니다.
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
       </Row>
     </>
   )

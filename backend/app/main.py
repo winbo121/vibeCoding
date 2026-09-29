@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse, Response
 
 from app.config import settings
 from app.database import Base, SessionLocal, engine
-from app.routers import auth, boards, faqs, programs, users
+from app.routers import auth, boards, faqs, jobs, programs, skills, users
 from app.seed import seed_data
 
 
@@ -37,6 +37,8 @@ app.include_router(users.router, prefix="/api")
 app.include_router(programs.router, prefix="/api")
 app.include_router(faqs.router, prefix="/api")
 app.include_router(boards.router, prefix="/api")
+app.include_router(jobs.router, prefix="/api")
+app.include_router(skills.router, prefix="/api")
 
 
 @app.middleware("http")

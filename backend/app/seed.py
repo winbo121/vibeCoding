@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 
 from app.auth import hash_password
 from app.config import settings
-from app.models import Faq, Program, User, UserProgram
+from app.jobs.service import sync_jobs
+from app.models import Faq, JobPosting, Program, User, UserProgram
 
 
 DEFAULT_PROGRAMS = [
@@ -17,12 +18,19 @@ DEFAULT_PROGRAMS = [
         "description": "사용자별 메뉴 권한",
         "sort_order": 20,
     },
+    {
+        "code": "JOBS",
+        "name": "입사지원 찾기",
+        "path": "/jobs",
+        "description": "개발자 채용공고 조회 (샘플/공식 API)",
+        "sort_order": 25,
+    },
     {"code": "FAQS", "name": "FAQ", "path": "/faqs", "description": "FAQ CRUD", "sort_order": 30},
     {"code": "BOARD", "name": "게시판", "path": "/board", "description": "게시판 CRUD/파일", "sort_order": 40},
 ]
 
 ADMIN_ONLY_CODES = {"USERS", "USER_PROGRAMS"}
-USER_MENU_CODES = {"FAQS", "BOARD"}
+USER_MENU_CODES = {"FAQS", "BOARD", "JOBS"}
 
 
 def _looks_broken(text: str | None) -> bool:
@@ -41,6 +49,10 @@ def ensure_schema(db: Session) -> None:
             """
         )
     )
+    db.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS career_years INTEGER"))
+    db.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS skills VARCHAR(500)"))
+    db.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS gender VARCHAR(10)"))
+    db.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS company VARCHAR(200)"))
     db.commit()
 
 
@@ -79,6 +91,10 @@ def seed_data(db: Session) -> None:
         if _looks_broken(admin.name) or not admin.name:
             admin.name = "관리자"
         admin.role = "admin"
+        admin.career_years = None
+        admin.skills = None
+        admin.gender = None
+        admin.company = None
 
     normal = db.scalar(select(User).where(User.username == "user"))
     if not normal:
@@ -89,11 +105,21 @@ def seed_data(db: Session) -> None:
             email="user@vibecoding.local",
             role="user",
             is_active=True,
+            career_years=3,
+            skills="Python, FastAPI, PostgreSQL",
+            gender="male",
+            company="VibeCoding",
         )
         db.add(normal)
         db.flush()
-    elif not getattr(normal, "role", None):
-        normal.role = "user"
+    else:
+        if not getattr(normal, "role", None):
+            normal.role = "user"
+        # 데모용: 스택이 비어 있으면 샘플 스택을 채워 맞춤 공고가 보이도록 함
+        if not (getattr(normal, "skills", None) or "").strip():
+            normal.skills = "Python, FastAPI, PostgreSQL"
+            if getattr(normal, "career_years", None) is None:
+                normal.career_years = 3
 
     program_map: dict[str, Program] = {}
     for item in DEFAULT_PROGRAMS:
@@ -141,5 +167,8 @@ def seed_data(db: Session) -> None:
                 is_published=True,
             )
         )
+
+    if not db.scalar(select(JobPosting.id).limit(1)):
+        sync_jobs(db, source="sample")
 
     db.commit()

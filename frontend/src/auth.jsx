@@ -58,6 +58,11 @@ export function AuthProvider({ children }) {
         setUser(null)
         setPrograms([])
       },
+      refreshUser: async () => {
+        const me = await api.me()
+        setUser(me)
+        return me
+      },
       refreshPrograms: async () => {
         const progs = await api.myPrograms()
         setPrograms(progs)

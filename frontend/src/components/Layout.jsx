@@ -14,6 +14,7 @@ const ADMIN_MENU_CODES = new Set(['USERS', 'USER_PROGRAMS'])
 const FALLBACK_MENUS = [
   { code: 'USERS', name: '사용자관리', path: '/users', icon: 'bi-people' },
   { code: 'USER_PROGRAMS', name: '메뉴관리', path: '/user-programs', icon: 'bi-grid-1x2' },
+  { code: 'JOBS', name: '입사지원 찾기', path: '/jobs', icon: 'bi-briefcase' },
   { code: 'FAQS', name: 'FAQ', path: '/faqs', icon: 'bi-question-circle' },
   { code: 'BOARD', name: '게시판', path: '/board', icon: 'bi-journal-richtext' },
 ]
@@ -23,6 +24,7 @@ const MENU_ICONS = {
   USER_PROGRAMS: 'bi-grid-1x2',
   FAQS: 'bi-question-circle',
   BOARD: 'bi-journal-richtext',
+  JOBS: 'bi-briefcase',
 }
 
 export default function Layout() {
@@ -62,10 +64,27 @@ export default function Layout() {
                       <i className={`bi ${isAdmin ? 'bi-shield-check' : 'bi-person'} me-1`} />
                       {isAdmin ? '관리자' : '일반'}
                     </Badge>
-                    <Badge bg="light" text="dark" pill>
+                    <Badge
+                      as={NavLink}
+                      to="/profile"
+                      bg="light"
+                      text="dark"
+                      pill
+                      className="text-decoration-none"
+                    >
                       {user?.name || user?.username}
                     </Badge>
                   </Navbar.Text>
+                  <Button
+                    as={NavLink}
+                    to="/profile"
+                    variant="outline-light"
+                    size="sm"
+                    className="rounded-pill"
+                  >
+                    <i className="bi bi-person-badge me-1" />
+                    내 정보
+                  </Button>
                   <Button variant="outline-light" size="sm" className="rounded-pill" onClick={onLogout}>
                     <i className="bi bi-box-arrow-right me-1" />
                     로그아웃

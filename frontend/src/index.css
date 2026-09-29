@@ -370,6 +370,85 @@ body::before {
   gap: 0.25rem;
 }
 
+.skill-ac {
+  position: relative;
+}
+
+.skill-ac-dropdown {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  margin-top: 0.25rem;
+  max-height: 220px;
+  overflow: auto;
+  border-radius: 0.75rem;
+  background: #fff;
+}
+
+.skill-ac-chip {
+  cursor: pointer;
+  font-weight: 500;
+  padding: 0.45em 0.7em;
+  border-radius: 999px !important;
+}
+
+.skill-ac-chip:hover {
+  background: rgba(13, 148, 136, 0.12) !important;
+  color: #0f766e !important;
+}
+
+.skill-search {
+  position: relative;
+}
+
+.skill-search-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.skill-search-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.45em 0.65em;
+  border-radius: 999px;
+}
+
+.skill-search-tag-x {
+  appearance: none;
+  border: 0;
+  background: rgba(255, 255, 255, 0.28);
+  color: inherit;
+  width: 1.15rem;
+  height: 1.15rem;
+  line-height: 1;
+  border-radius: 999px;
+  padding: 0;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.skill-search-tag-x:hover {
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.skill-search-dropdown {
+  position: absolute;
+  z-index: 30;
+  left: 0;
+  right: 0;
+  margin-top: 0.35rem;
+  max-height: 260px;
+  overflow: auto;
+  border-radius: 0.75rem;
+  background: #fff;
+}
+
 .vc-footer-note {
   color: #64748b;
   font-size: 0.85rem;

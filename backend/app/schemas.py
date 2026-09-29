@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -20,6 +21,10 @@ class UserCreate(BaseModel):
     email: str | None = None
     role: str = Field(default="user", pattern="^(admin|user)$")
     is_active: bool = True
+    career_years: int | None = Field(default=None, ge=0, le=50)
+    skills: str | None = Field(default=None, max_length=500)
+    gender: Literal["male", "female"] | None = None
+    company: str | None = Field(default=None, max_length=200)
 
 
 class UserUpdate(BaseModel):
@@ -28,6 +33,21 @@ class UserUpdate(BaseModel):
     email: str | None = None
     role: str | None = Field(default=None, pattern="^(admin|user)$")
     is_active: bool | None = None
+    career_years: int | None = Field(default=None, ge=0, le=50)
+    skills: str | None = Field(default=None, max_length=500)
+    gender: Literal["male", "female"] | None = None
+    company: str | None = Field(default=None, max_length=200)
+
+
+class ProfileUpdate(BaseModel):
+    """일반 사용자가 본인 프로필만 수정할 때 사용 (권한 변경 불가)."""
+
+    name: str | None = None
+    email: str | None = None
+    career_years: int | None = Field(default=None, ge=0, le=50)
+    skills: str | None = Field(default=None, max_length=500)
+    gender: Literal["male", "female"] | None = None
+    company: str | None = Field(default=None, max_length=200)
 
 
 class UserOut(BaseModel):
@@ -39,6 +59,10 @@ class UserOut(BaseModel):
     email: str | None
     role: str
     is_active: bool
+    career_years: int | None = None
+    skills: str | None = None
+    gender: str | None = None
+    company: str | None = None
     created_at: datetime
 
 
@@ -138,3 +162,33 @@ class BoardPostOut(BaseModel):
     created_at: datetime
     updated_at: datetime
     files: list[BoardFileOut] = []
+
+
+class JobPostingOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    source: str
+    external_id: str
+    title: str
+    company: str
+    location: str | None
+    experience: str | None
+    employment_type: str | None
+    skills: str | None
+    summary: str | None
+    description: str | None
+    url: str | None
+    posted_at: datetime | None
+    collected_at: datetime
+    is_active: bool
+    match_score: int = 0
+    matched_skills: list[str] = []
+
+
+class JobSyncResult(BaseModel):
+    source: str
+    inserted: int
+    updated: int
+    total: int
+    message: str

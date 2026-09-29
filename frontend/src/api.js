@@ -32,6 +32,14 @@ export const api = {
     request('/auth/login', { method: 'POST', body: JSON.stringify({ username, password }) }),
   me: () => request('/auth/me'),
   myPrograms: () => request('/auth/my-programs'),
+  updateProfile: (body) => request('/auth/profile', { method: 'PUT', body: JSON.stringify(body) }),
+  suggestSkills: (q, limit = 12) => {
+    const qs = new URLSearchParams()
+    if (q) qs.set('q', q)
+    qs.set('limit', String(limit))
+    return request(`/skills/suggest?${qs.toString()}`)
+  },
+  skillDictionary: () => request('/skills/dictionary'),
 
   listUsers: () => request('/users'),
   createUser: (body) => request('/users', { method: 'POST', body: JSON.stringify(body) }),
@@ -61,6 +69,25 @@ export const api = {
   deletePost: (id) => request(`/board/${id}`, { method: 'DELETE' }),
   deleteFile: (id) => request(`/board/files/${id}`, { method: 'DELETE' }),
   downloadUrl: (id) => `${API_BASE}/board/files/${id}/download`,
+
+  listJobs: (params = {}) => {
+    const qs = new URLSearchParams()
+    if (params.q) qs.set('q', params.q)
+    if (params.source) qs.set('source', params.source)
+    // true/false 모두 명시 전송 (미전송 시 서버가 스택 있으면 맞춤만 기본 적용)
+    if (params.match_only === true) qs.set('match_only', 'true')
+    if (params.match_only === false) qs.set('match_only', 'false')
+    const query = qs.toString()
+    return request(`/jobs${query ? `?${query}` : ''}`)
+  },
+  getJob: (id) => request(`/jobs/${id}`),
+  listJobSources: () => request('/jobs/sources'),
+  syncJobs: (source = 'sample', params = {}) => {
+    const qs = new URLSearchParams({ source })
+    if (params.keywords) qs.set('keywords', params.keywords)
+    if (params.count) qs.set('count', String(params.count))
+    return request(`/jobs/sync?${qs.toString()}`, { method: 'POST' })
+  },
 }
 
 export async function downloadFile(fileId, filename) {

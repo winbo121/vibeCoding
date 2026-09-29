@@ -11,6 +11,10 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(100) NOT NULL DEFAULT '',
     email VARCHAR(200),
     role VARCHAR(20) NOT NULL DEFAULT 'user',
+    career_years INTEGER,
+    skills VARCHAR(500),
+    gender VARCHAR(10),
+    company VARCHAR(200),
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -61,5 +65,25 @@ CREATE TABLE IF NOT EXISTS board_files (
     content_type VARCHAR(120),
     size INTEGER NOT NULL DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS job_postings (
+    id SERIAL PRIMARY KEY,
+    source VARCHAR(30) NOT NULL,
+    external_id VARCHAR(100) NOT NULL,
+    title VARCHAR(300) NOT NULL,
+    company VARCHAR(200) NOT NULL,
+    location VARCHAR(200),
+    experience VARCHAR(100),
+    employment_type VARCHAR(100),
+    skills VARCHAR(500),
+    summary TEXT,
+    description TEXT,
+    url VARCHAR(500),
+    posted_at TIMESTAMPTZ,
+    collected_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    CONSTRAINT uq_job_source_external UNIQUE (source, external_id)
+);
+CREATE INDEX IF NOT EXISTS ix_job_postings_source ON job_postings (source);
 
 COMMIT;

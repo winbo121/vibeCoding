@@ -15,6 +15,11 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(100), default="")
     email: Mapped[str | None] = mapped_column(String(200), nullable=True)
     role: Mapped[str] = mapped_column(String(20), default="user")  # admin | user
+    # Developer profile (cleared when role becomes admin)
+    career_years: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    skills: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    gender: Mapped[str | None] = mapped_column(String(10), nullable=True)  # male | female
+    company: Mapped[str | None] = mapped_column(String(200), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
@@ -89,3 +94,26 @@ class BoardFile(Base):
     size: Mapped[int] = mapped_column(Integer, default=0)
 
     post: Mapped["BoardPost"] = relationship(back_populates="files")
+
+
+class JobPosting(Base):
+    """Developer job postings aggregated from sample/official API adapters."""
+
+    __tablename__ = "job_postings"
+    __table_args__ = (UniqueConstraint("source", "external_id", name="uq_job_source_external"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    source: Mapped[str] = mapped_column(String(30), index=True)  # sample | saramin | jobkorea
+    external_id: Mapped[str] = mapped_column(String(100))
+    title: Mapped[str] = mapped_column(String(300))
+    company: Mapped[str] = mapped_column(String(200))
+    location: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    experience: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    employment_type: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    skills: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    posted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    collected_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
