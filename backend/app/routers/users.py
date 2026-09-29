@@ -17,6 +17,7 @@ def clear_profile(user: User) -> None:
     user.skills = None
     user.gender = None
     user.company = None
+    user.home_address = None
 
 
 @router.get("", response_model=list[UserOut])
@@ -39,6 +40,7 @@ def create_user(payload: UserCreate, _: User = Depends(get_current_admin), db: S
         skills=skills,
         gender=None if role == "admin" else payload.gender,
         company=None if role == "admin" else payload.company,
+        home_address=None if role == "admin" else payload.home_address,
     )
     if role == "admin":
         clear_profile(user)

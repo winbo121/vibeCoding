@@ -15,6 +15,7 @@ const empty = {
   skills: '',
   gender: '',
   company: '',
+  home_address: '',
 }
 
 function genderLabel(value) {
@@ -56,6 +57,7 @@ export default function Users() {
         skills: '',
         gender: '',
         company: '',
+        home_address: '',
       }))
       return
     }
@@ -69,6 +71,7 @@ export default function Users() {
         skills: null,
         gender: null,
         company: null,
+        home_address: null,
       }
     }
     return {
@@ -76,6 +79,7 @@ export default function Users() {
       skills: form.skills.trim() || null,
       gender: form.gender || null,
       company: form.company.trim() || null,
+      home_address: form.home_address.trim() || null,
     }
   }
 
@@ -125,6 +129,7 @@ export default function Users() {
       skills: row.skills || '',
       gender: row.gender || '',
       company: row.company || '',
+      home_address: row.home_address || '',
     })
   }
 
@@ -234,6 +239,14 @@ export default function Users() {
                       onChange={(company) => setForm((f) => ({ ...f, company }))}
                     />
                   </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>집주소</Form.Label>
+                    <CompanyPlacePicker
+                      variant="home"
+                      value={form.home_address}
+                      onChange={(home_address) => setForm((f) => ({ ...f, home_address }))}
+                    />
+                  </Form.Group>
                 </>
               )}
 
@@ -278,6 +291,7 @@ export default function Users() {
                     <th>년차</th>
                     <th>성별</th>
                     <th>현직장</th>
+                    <th>집주소</th>
                     <th>활성</th>
                     <th />
                   </tr>
@@ -292,6 +306,7 @@ export default function Users() {
                       <td>{row.role === 'admin' ? '-' : (row.career_years ?? '-')}</td>
                       <td>{row.role === 'admin' ? '-' : genderLabel(row.gender)}</td>
                       <td>{row.role === 'admin' ? '-' : (row.company || '-')}</td>
+                      <td className="small">{row.role === 'admin' ? '-' : (row.home_address || '-')}</td>
                       <td>{row.is_active ? 'Y' : 'N'}</td>
                       <td className="text-end">
                         <Stack direction="horizontal" gap={2} className="justify-content-end">

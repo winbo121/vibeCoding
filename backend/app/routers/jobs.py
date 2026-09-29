@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.auth import get_current_admin, get_current_user, is_admin
 from app.database import get_db
+from app.jobs.commute import commute_info
 from app.jobs.matching import parse_skills, score_job
 from app.jobs.service import source_status, sync_all_configured, sync_jobs
 from app.models import JobPosting, User
@@ -21,10 +22,38 @@ class JobSourceStatus(BaseModel):
     hint: str
 
 
-def _to_out(job: JobPosting, score: int = 0, matched: list[str] | None = None) -> JobPostingOut:
+def _apply_commute(out: JobPostingOut, user: User) -> JobPostingOut:
+    if is_admin(user):
+        return out
+    home = (getattr(user, "home_address", None) or "").strip()
+    if not home:
+        out.commute_available = False
+        out.commute_message = "집주소를 등록하면 출퇴근 거리·시간이 표시됩니다."
+        return out
+    info = commute_info(home, out.company, out.location)
+    if not info:
+        return out
+    out.commute_distance_m = info.get("distance_m")
+    out.commute_duration_sec = info.get("duration_sec")
+    out.commute_mode = info.get("mode")
+    out.commute_transfers = info.get("transfers")
+    out.commute_workplace = info.get("workplace_name")
+    out.commute_available = info.get("available")
+    out.commute_message = info.get("message")
+    return out
+
+
+def _to_out(
+    job: JobPosting,
+    score: int = 0,
+    matched: list[str] | None = None,
+    user: User | None = None,
+) -> JobPostingOut:
     data = JobPostingOut.model_validate(job)
     data.match_score = score
     data.matched_skills = matched or []
+    if user is not None:
+        return _apply_commute(data, user)
     return data
 
 
@@ -63,7 +92,7 @@ def list_jobs(
 
     # 관리자: 항상 전체 공고 (매칭 필터/정렬 없음)
     if is_admin(user):
-        return [_to_out(job) for job in rows]
+        return [_to_out(job, user=user) for job in rows]
 
     user_skills = parse_skills(getattr(user, "skills", None))
     # 스택이 있으면 기본으로 맞춤만 노출 (명시적으로 false일 때만 전체)
@@ -74,7 +103,7 @@ def list_jobs(
         score, matched = score_job(job, user_skills)
         if apply_match_filter and user_skills and score <= 0:
             continue
-        scored.append(_to_out(job, score, matched))
+        scored.append(_to_out(job, score, matched, user=user))
 
     if user_skills:
         scored.sort(
@@ -114,7 +143,7 @@ def get_job(job_id: int, user: User = Depends(get_current_user), db: Session = D
     if not job or not job.is_active:
         raise HTTPException(status_code=404, detail="채용공고를 찾을 수 없습니다.")
     if is_admin(user):
-        return _to_out(job)
+        return _to_out(job, user=user)
     user_skills = parse_skills(getattr(user, "skills", None))
     score, matched = score_job(job, user_skills)
-    return _to_out(job, score, matched)
+    return _to_out(job, score, matched, user=user)

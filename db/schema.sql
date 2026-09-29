@@ -1,4 +1,4 @@
--- VibeCoding schema (PostgreSQL 14+)
+-- DevHaven (개발자 쉼터) schema (PostgreSQL 14+)
 -- Encoding: UTF8
 -- Apply inside database: vibecoding
 
@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
     skills VARCHAR(500),
     gender VARCHAR(10),
     company VARCHAR(200),
+    home_address VARCHAR(300),
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

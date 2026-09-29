@@ -34,8 +34,8 @@ export default function Login() {
         <Card className="vc-login-card">
           <div className="login-top">
             <div className="small opacity-75 mb-1">
-              <i className="bi bi-shield-lock me-1" />
-              Secure Access
+              <i className="bi bi-cup-hot me-1" />
+              DevHaven · 개발자 쉼터
             </div>
             <h1 className="h2">로그인</h1>
             <div className="small opacity-75 mt-1">관리자 admin/1234 · 일반 user/1234</div>

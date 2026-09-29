@@ -36,6 +36,46 @@ function formatDate(value) {
   }
 }
 
+function formatDistance(meters) {
+  if (meters == null || Number.isNaN(Number(meters))) return null
+  const m = Number(meters)
+  if (m < 1000) return `${Math.round(m)}m`
+  return `${(m / 1000).toFixed(m >= 10000 ? 0 : 1)}km`
+}
+
+function formatDuration(seconds) {
+  if (seconds == null || Number.isNaN(Number(seconds))) return null
+  const s = Math.max(0, Math.round(Number(seconds)))
+  const h = Math.floor(s / 3600)
+  const m = Math.floor((s % 3600) / 60)
+  if (h > 0) return m > 0 ? `${h}시간 ${m}분` : `${h}시간`
+  if (m <= 0) return '1분 미만'
+  return `약 ${m}분`
+}
+
+const COMMUTE_MODE_LABEL = {
+  transit: '대중교통',
+  car: '자동차',
+  estimate: '예상',
+}
+
+function commuteText(row) {
+  if (!row) return null
+  if (row.commute_available === false) return row.commute_message || null
+  if (row.commute_distance_m == null && row.commute_duration_sec == null) return null
+  const parts = []
+  const dist = formatDistance(row.commute_distance_m)
+  const dur = formatDuration(row.commute_duration_sec)
+  if (dist) parts.push(dist)
+  if (dur) parts.push(dur)
+  const mode = COMMUTE_MODE_LABEL[row.commute_mode] || null
+  if (mode) parts.push(mode)
+  if (row.commute_mode === 'transit' && row.commute_transfers != null) {
+    parts.push(row.commute_transfers === 0 ? '환승 없음' : `환승 ${row.commute_transfers}회`)
+  }
+  return parts.length ? parts.join(' · ') : null
+}
+
 function skillList(raw) {
   if (!raw) return []
   return raw
@@ -115,6 +155,7 @@ export default function Jobs() {
 
   const mySkills = useMemo(() => skillList(profileSkills), [profileSkills])
   const hasStack = !isAdmin && mySkills.length > 0
+  const hasHome = !isAdmin && Boolean((user?.home_address || '').trim())
 
   const load = useCallback(
     async (params = {}) => {
@@ -257,6 +298,20 @@ export default function Jobs() {
                   있습니다.
                 </>
               )}
+              <div className="small mt-2 mb-0">
+                {hasHome ? (
+                  <>
+                    <i className="bi bi-house-door me-1" />
+                    집주소 기준 출퇴근 거리·시간을 각 공고에 표시합니다.
+                  </>
+                ) : (
+                  <>
+                    <i className="bi bi-house-door me-1" />
+                    <Link to="/profile">내 정보</Link>에 집주소를 등록하면 회사까지 출퇴근 거리·시간이
+                    표시됩니다.
+                  </>
+                )}
+              </div>
             </Alert>
           )}
 
@@ -362,6 +417,7 @@ export default function Jobs() {
             {rows.map((row) => {
               const matched = row.matched_skills || []
               const score = row.match_score || 0
+              const commute = commuteText(row)
               return (
                 <ListGroup.Item
                   key={row.id}
@@ -388,6 +444,16 @@ export default function Jobs() {
                         {row.experience ? ` · ${row.experience}` : ''}
                         {row.employment_type ? ` · ${row.employment_type}` : ''}
                       </div>
+                      {commute && (
+                        <div
+                          className={`small mb-1 ${
+                            row.commute_available === false ? 'text-muted' : 'text-primary'
+                          }`}
+                        >
+                          <i className="bi bi-signpost-2 me-1" />
+                          출퇴근 {commute}
+                        </div>
+                      )}
                       {row.summary && <div className="small">{row.summary}</div>}
                       {matched.length > 0 && (
                         <div className="mt-2">
@@ -472,6 +538,22 @@ export default function Jobs() {
                 <Col md={6}>경력: {selected.experience || '-'}</Col>
                 <Col md={6}>고용형태: {selected.employment_type || '-'}</Col>
                 <Col md={6}>게시일: {formatDate(selected.posted_at)}</Col>
+                {!isAdmin && (
+                  <Col md={12}>
+                    {commuteText(selected) ? (
+                      <span className={selected.commute_available === false ? '' : 'text-primary'}>
+                        <i className="bi bi-signpost-2 me-1" />
+                        집 → 회사 출퇴근: {commuteText(selected)}
+                        {selected.commute_workplace ? ` (${selected.commute_workplace})` : ''}
+                      </span>
+                    ) : (
+                      <span>
+                        <i className="bi bi-signpost-2 me-1" />
+                        집주소를 등록하면 출퇴근 거리·시간이 표시됩니다.
+                      </span>
+                    )}
+                  </Col>
+                )}
               </Row>
               {(selected.matched_skills || []).length > 0 && (
                 <div className="mb-2">

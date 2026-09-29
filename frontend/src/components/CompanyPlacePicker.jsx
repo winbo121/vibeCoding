@@ -34,7 +34,40 @@ function loadKakaoSdk(appKey) {
   return kakaoScriptPromise
 }
 
-export default function CompanyPlacePicker({ value, onChange, disabled = false }) {
+const PRESETS = {
+  company: {
+    searchMode: 'keyword',
+    valueField: 'name',
+    searchPlaceholder: '회사명 검색 (예: 카카오, 네이버, 삼성전자)',
+    fallbackPlaceholder: '회사명 직접 입력',
+    selectedEmptyHint: '다른 회사로 바꾸려면 검색 후 목록에서 하나를 고르세요.',
+    emptyHint: '회사명을 검색한 뒤 목록에서 하나만 선택하세요.',
+    helpText: '직장은 하나만 선택할 수 있습니다. 선택한 회사는 지도에 항상 표시됩니다.',
+  },
+  home: {
+    searchMode: 'address',
+    valueField: 'address',
+    searchPlaceholder: '집주소 검색 (예: 서울 강남구 역삼동, 아파트명)',
+    fallbackPlaceholder: '집주소 직접 입력',
+    selectedEmptyHint: '다른 주소로 바꾸려면 검색 후 목록에서 하나를 고르세요.',
+    emptyHint: '주소를 검색한 뒤 목록에서 하나만 선택하세요.',
+    helpText: '집주소는 하나만 저장됩니다. 선택한 위치는 지도에 표시됩니다.',
+  },
+}
+
+function placeValue(place, valueField) {
+  if (!place) return ''
+  if (valueField === 'address') return (place.address || place.name || '').trim()
+  return (place.name || '').trim()
+}
+
+export default function CompanyPlacePicker({
+  value,
+  onChange,
+  disabled = false,
+  variant = 'company',
+}) {
+  const preset = PRESETS[variant] || PRESETS.company
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
   const [selected, setSelected] = useState(null)
@@ -120,31 +153,34 @@ export default function CompanyPlacePicker({ value, onChange, disabled = false }
     if (config?.map_ready) ensureMap()
   }, [config, ensureMap])
 
-  // 선택된 장소(좌표 포함)는 항상 지도에 하나만 표시
   useEffect(() => {
     if (!selected) return
     showPlaceOnMap(selected)
   }, [selected, showPlaceOnMap])
 
-  // 저장된 회사명만 있을 때 좌표를 찾아 복원
+  // 저장된 값만 있을 때 좌표를 찾아 복원
   useEffect(() => {
-    const name = (value || '').trim()
-    if (!name) {
+    const saved = (value || '').trim()
+    if (!saved) {
       if (selected) setSelected(null)
       hydrateRef.current = ''
       clearMarkers()
       return
     }
     if (!config?.search_ready) return
-    if (selected?.name === name) return
-    if (hydrateRef.current === name) return
-    hydrateRef.current = name
+    const selectedVal = placeValue(selected, preset.valueField)
+    if (selectedVal === saved) return
+    if (hydrateRef.current === saved) return
+    hydrateRef.current = saved
     let cancelled = false
     ;(async () => {
       try {
-        const rows = await api.searchPlaces(name, 8)
+        const rows = await api.searchPlaces(saved, 8, preset.searchMode)
         if (cancelled) return
-        const match = rows.find((r) => r.name === name) || rows[0]
+        const match =
+          rows.find((r) => placeValue(r, preset.valueField) === saved) ||
+          rows.find((r) => r.name === saved || r.address === saved) ||
+          rows[0]
         if (!match) return
         setSelected(match)
       } catch {
@@ -154,18 +190,19 @@ export default function CompanyPlacePicker({ value, onChange, disabled = false }
     return () => {
       cancelled = true
     }
-  }, [config, value, selected])
+  }, [config, value, selected, preset.valueField, preset.searchMode])
 
   const pickPlace = useCallback(
     async (place) => {
-      hydrateRef.current = place.name
-      onChangeRef.current(place.name)
+      const next = placeValue(place, preset.valueField)
+      hydrateRef.current = next
+      onChangeRef.current(next)
       setQuery('')
       setResults([])
       setError('')
       setSelected(place)
     },
-    [],
+    [preset.valueField],
   )
 
   const onSearch = async (e) => {
@@ -179,12 +216,11 @@ export default function CompanyPlacePicker({ value, onChange, disabled = false }
     setSearching(true)
     setError('')
     try {
-      const rows = await api.searchPlaces(q, 12)
+      const rows = await api.searchPlaces(q, 12, preset.searchMode)
       setResults(rows)
       if (rows.length === 0) {
         setError('검색 결과가 없습니다. 다른 키워드로 시도해 보세요.')
       }
-      // 검색만 하고 자동 선택하지 않음. 이미 고른 회사는 지도에 유지
       if (selected) await showPlaceOnMap(selected)
     } catch (err) {
       setError(err.message)
@@ -194,7 +230,7 @@ export default function CompanyPlacePicker({ value, onChange, disabled = false }
     }
   }
 
-  const clearCompany = () => {
+  const clearSelection = () => {
     onChange('')
     setSelected(null)
     setResults([])
@@ -209,7 +245,7 @@ export default function CompanyPlacePicker({ value, onChange, disabled = false }
           value={value}
           disabled={disabled}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="회사명 직접 입력"
+          placeholder={preset.fallbackPlaceholder}
         />
         <Alert variant="warning" className="py-2 mt-2 mb-0 small">
           지도 검색을 쓰려면 <code>backend/.env</code>에 <code>KAKAO_REST_API_KEY</code>,{' '}
@@ -231,12 +267,17 @@ export default function CompanyPlacePicker({ value, onChange, disabled = false }
           <Badge bg="primary" className="me-2">
             선택됨
           </Badge>
-          <strong>{value || selected?.name}</strong>
-          {(selected?.address || '').length > 0 && (
+          <strong>{value || placeValue(selected, preset.valueField)}</strong>
+          {preset.valueField === 'name' && (selected?.address || '').length > 0 && (
             <span className="text-secondary small ms-2">{selected.address}</span>
           )}
+          {preset.valueField === 'address' &&
+            selected?.name &&
+            selected.name !== (value || placeValue(selected, preset.valueField)) && (
+              <span className="text-secondary small ms-2">{selected.name}</span>
+            )}
           {!disabled && (
-            <Button type="button" size="sm" variant="link" className="ms-1" onClick={clearCompany}>
+            <Button type="button" size="sm" variant="link" className="ms-1" onClick={clearSelection}>
               지우기
             </Button>
           )}
@@ -251,7 +292,7 @@ export default function CompanyPlacePicker({ value, onChange, disabled = false }
           type="search"
           value={query}
           disabled={disabled || searching}
-          placeholder="회사명 검색 (예: 카카오, 네이버, 삼성전자)"
+          placeholder={preset.searchPlaceholder}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
@@ -287,7 +328,10 @@ export default function CompanyPlacePicker({ value, onChange, disabled = false }
             <ListGroup.Item
               key={place.id || `${place.name}-${place.x}-${place.y}`}
               action
-              active={selected?.id === place.id || selected?.name === place.name}
+              active={
+                selected?.id === place.id ||
+                placeValue(selected, preset.valueField) === placeValue(place, preset.valueField)
+              }
               className="py-2"
               onClick={() => !disabled && pickPlace(place)}
             >
@@ -298,9 +342,7 @@ export default function CompanyPlacePicker({ value, onChange, disabled = false }
           ))}
           {!searching && results.length === 0 && (
             <ListGroup.Item className="text-secondary small py-3 text-center">
-              {selected || value
-                ? '다른 회사로 바꾸려면 검색 후 목록에서 하나를 고르세요.'
-                : '회사명을 검색한 뒤 목록에서 하나만 선택하세요.'}
+              {selected || value ? preset.selectedEmptyHint : preset.emptyHint}
             </ListGroup.Item>
           )}
         </ListGroup>
@@ -315,9 +357,7 @@ export default function CompanyPlacePicker({ value, onChange, disabled = false }
         </div>
       </div>
 
-      <Form.Text className="text-secondary">
-        직장은 하나만 선택할 수 있습니다. 선택한 회사는 지도에 항상 표시됩니다.
-      </Form.Text>
+      <Form.Text className="text-secondary">{preset.helpText}</Form.Text>
     </div>
   )
 }

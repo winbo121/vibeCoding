@@ -1,4 +1,4 @@
-# 다른 PC에서 VibeCoding 세팅하기
+# 다른 PC에서 DevHaven(개발자 쉼터) 세팅하기
 
 ## 1. 사전 설치
 

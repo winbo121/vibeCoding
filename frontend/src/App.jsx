@@ -8,6 +8,7 @@ import Faqs from './pages/Faqs'
 import Home from './pages/Home'
 import Jobs from './pages/Jobs'
 import Login from './pages/Login'
+import NearbyFood from './pages/NearbyFood'
 import Profile from './pages/Profile'
 import UserPrograms from './pages/UserPrograms'
 import Users from './pages/Users'
@@ -73,6 +74,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <Jobs />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="nearby-food"
+              element={
+                <ProtectedRoute>
+                  <NearbyFood />
                 </ProtectedRoute>
               }
             />

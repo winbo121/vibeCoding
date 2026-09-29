@@ -161,6 +161,19 @@ def _canon_from_dict(token: str) -> str | None:
     return SKILL_CANON.get(key2)
 
 
+def canonical_skill_name(token: str) -> str:
+    """통계/집계용 표준 기술명."""
+    text = (token or "").strip()
+    if not text:
+        return ""
+    canon = _canon_from_dict(text)
+    if canon:
+        return canon
+    if re.fullmatch(r"[A-Za-z][A-Za-z0-9.+#\s\-]*", text):
+        return text[0].upper() + text[1:] if len(text) > 1 else text.upper()
+    return text
+
+
 def _openai_normalize(unknown: list[str]) -> dict[str, str]:
     """미등록 토큰만 OpenAI로 표준 영문명 변환 (키 없으면 빈 dict)."""
     api_key = (getattr(settings, "openai_api_key", None) or "").strip()

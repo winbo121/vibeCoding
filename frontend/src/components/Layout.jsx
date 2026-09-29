@@ -15,6 +15,7 @@ const FALLBACK_MENUS = [
   { code: 'USERS', name: '사용자관리', path: '/users', icon: 'bi-people' },
   { code: 'USER_PROGRAMS', name: '메뉴관리', path: '/user-programs', icon: 'bi-grid-1x2' },
   { code: 'JOBS', name: '입사지원 찾기', path: '/jobs', icon: 'bi-briefcase' },
+  { code: 'NEARBY_FOOD', name: '회사 주변 맛집', path: '/nearby-food', icon: 'bi-cup-hot' },
   { code: 'FAQS', name: 'FAQ', path: '/faqs', icon: 'bi-question-circle' },
   { code: 'BOARD', name: '게시판', path: '/board', icon: 'bi-journal-richtext' },
 ]
@@ -25,6 +26,7 @@ const MENU_ICONS = {
   FAQS: 'bi-question-circle',
   BOARD: 'bi-journal-richtext',
   JOBS: 'bi-briefcase',
+  NEARBY_FOOD: 'bi-cup-hot',
 }
 
 export default function Layout() {
@@ -32,24 +34,30 @@ export default function Layout() {
   const navigate = useNavigate()
   const baseMenus = programs.length ? programs : isAuthenticated ? FALLBACK_MENUS : []
   const menus = isAdmin ? baseMenus : baseMenus.filter((m) => !ADMIN_MENU_CODES.has(m.code))
+  const hasCompany = Boolean((user?.company || '').trim())
 
   const onLogout = () => {
     logout()
     navigate('/')
   }
 
+  // 일반 사용자: 현직장 없으면 맛집 메뉴 자체를 숨김 (관리자는 현위치 사용)
+  const visibleMenus = menus.filter(
+    (m) => !(m.code === 'NEARBY_FOOD' && !isAdmin && !hasCompany),
+  )
+
   return (
     <div className="app-frame">
       <Navbar expand="lg" className="vc-navbar" sticky="top">
         <Container>
           <Navbar.Brand as={NavLink} to="/">
-            Vibe<span>Coding</span>
+            Dev<span>Haven</span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="vc-nav" />
           <Navbar.Collapse id="vc-nav">
             <Nav className="mx-auto my-2 my-lg-0">
               {isAuthenticated &&
-                menus.map((m) => (
+                visibleMenus.map((m) => (
                   <Nav.Link key={m.code || m.path} as={NavLink} to={m.path} end={m.path === '/'}>
                     <i className={`bi ${MENU_ICONS[m.code] || 'bi-lightning-charge'} me-1`} />
                     {m.name}

@@ -1,6 +1,7 @@
-# VibeCoding
+# DevHaven (개발자 쉼터)
 
-Python(FastAPI) + React + PostgreSQL + Tomcat 풀스택 CRUD 프로젝트입니다.
+Python(FastAPI) + React + PostgreSQL + Tomcat 풀스택 프로젝트입니다.  
+브랜드명: **DevHaven** · 한글명: **개발자 쉼터**
 
 ## 환경 버전
 

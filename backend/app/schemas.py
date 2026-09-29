@@ -25,6 +25,7 @@ class UserCreate(BaseModel):
     skills: str | None = Field(default=None, max_length=500)
     gender: Literal["male", "female"] | None = None
     company: str | None = Field(default=None, max_length=200)
+    home_address: str | None = Field(default=None, max_length=300)
 
 
 class UserUpdate(BaseModel):
@@ -37,6 +38,7 @@ class UserUpdate(BaseModel):
     skills: str | None = Field(default=None, max_length=500)
     gender: Literal["male", "female"] | None = None
     company: str | None = Field(default=None, max_length=200)
+    home_address: str | None = Field(default=None, max_length=300)
 
 
 class ProfileUpdate(BaseModel):
@@ -48,6 +50,7 @@ class ProfileUpdate(BaseModel):
     skills: str | None = Field(default=None, max_length=500)
     gender: Literal["male", "female"] | None = None
     company: str | None = Field(default=None, max_length=200)
+    home_address: str | None = Field(default=None, max_length=300)
 
 
 class UserOut(BaseModel):
@@ -63,6 +66,7 @@ class UserOut(BaseModel):
     skills: str | None = None
     gender: str | None = None
     company: str | None = None
+    home_address: str | None = None
     created_at: datetime
 
 
@@ -184,6 +188,14 @@ class JobPostingOut(BaseModel):
     is_active: bool
     match_score: int = 0
     matched_skills: list[str] = []
+    # 집주소 ↔ 회사 출퇴근 (일반 사용자 + 집주소 있을 때만)
+    commute_distance_m: int | None = None
+    commute_duration_sec: int | None = None
+    commute_mode: str | None = None  # transit | car | estimate
+    commute_transfers: int | None = None
+    commute_workplace: str | None = None
+    commute_available: bool | None = None
+    commute_message: str | None = None
 
 
 class JobSyncResult(BaseModel):

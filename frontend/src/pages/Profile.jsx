@@ -14,6 +14,7 @@ export default function Profile() {
     skills: '',
     gender: '',
     company: '',
+    home_address: '',
   })
   const [error, setError] = useState('')
   const [info, setInfo] = useState('')
@@ -28,6 +29,7 @@ export default function Profile() {
       skills: user.skills || '',
       gender: user.gender || '',
       company: user.company || '',
+      home_address: user.home_address || '',
     })
   }, [user])
 
@@ -46,6 +48,7 @@ export default function Profile() {
         body.skills = form.skills.trim() || null
         body.gender = form.gender || null
         body.company = form.company.trim() || null
+        body.home_address = form.home_address.trim() || null
       }
       await api.updateProfile(body)
       const me = await refreshUser?.()
@@ -64,7 +67,7 @@ export default function Profile() {
 
   return (
     <Row className="justify-content-center">
-      <Col lg={6}>
+      <Col lg={8}>
         <Card className="vc-card">
           <Card.Header>
             <i className="bi bi-person-badge me-2" />
@@ -75,7 +78,7 @@ export default function Profile() {
             {info && <Alert variant="success">{info}</Alert>}
             {isAdmin && (
               <Alert variant="secondary">
-                관리자 계정은 개발 년차·기술스택·성별·현직장 정보를 사용하지 않습니다.
+                관리자 계정은 개발 년차·기술스택·성별·현직장·집주소 정보를 사용하지 않습니다.
               </Alert>
             )}
             <Form onSubmit={onSubmit}>
@@ -134,6 +137,14 @@ export default function Profile() {
                     <CompanyPlacePicker
                       value={form.company}
                       onChange={(company) => setForm((f) => ({ ...f, company }))}
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>집주소</Form.Label>
+                    <CompanyPlacePicker
+                      variant="home"
+                      value={form.home_address}
+                      onChange={(home_address) => setForm((f) => ({ ...f, home_address }))}
                     />
                   </Form.Group>
                 </>

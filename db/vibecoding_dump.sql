@@ -326,7 +326,8 @@ CREATE TABLE public.users (
     career_years integer,
     skills character varying(500),
     gender character varying(10),
-    company character varying(200)
+    company character varying(200),
+    home_address character varying(300)
 );
 
 
@@ -429,8 +430,8 @@ COPY public.board_posts (id, title, content, author_id, created_at, updated_at) 
 --
 
 COPY public.faqs (id, question, answer, sort_order, is_published, created_at, updated_at) FROM stdin;
-1	VibeCoding이 무엇인가요?	Python + React + PostgreSQL + Tomcat 기반 풀스택 실습 프로젝트입니다.	1	t	2026-09-29 11:16:00.547879+09	2026-09-29 11:16:00.547879+09
 2	테스트 질문	테스트 답변 입니다.	1	t	2026-09-29 13:08:01.830815+09	2026-09-29 13:08:16.011847+09
+1	DevHaven(개발자 쉼터)이 무엇인가요?	개발자를 위한 쉼터입니다. 채용·주변 맛집·FAQ·게시판을 한곳에서 이용할 수 있습니다.	1	t	2026-09-29 11:16:00.547879+09	2026-09-29 17:22:47.476228+09
 \.
 
 
@@ -466,6 +467,7 @@ COPY public.programs (id, code, name, path, description, sort_order, is_active) 
 3	FAQS	FAQ	/faqs	FAQ CRUD	30	t
 4	BOARD	게시판	/board	게시판 CRUD/파일	40	t
 5	JOBS	입사지원 찾기	/jobs	개발자 채용공고 조회 (샘플/공식 API)	25	t
+6	NEARBY_FOOD	회사 주변 맛집	/nearby-food	현직장(관리자는 현위치) 주변 맛집 찾기	28	t
 \.
 
 
@@ -482,6 +484,28 @@ COPY public.user_programs (id, user_id, program_id) FROM stdin;
 22	1	3
 23	1	4
 24	1	5
+25	1	6
+26	2	6
+27	3	5
+28	3	3
+29	3	6
+30	3	4
+31	4	3
+32	4	5
+33	4	4
+34	4	6
+35	5	6
+36	5	5
+37	5	3
+38	5	4
+39	6	6
+40	6	5
+41	6	3
+42	6	4
+43	7	6
+44	7	5
+45	7	3
+46	7	4
 \.
 
 
@@ -489,10 +513,14 @@ COPY public.user_programs (id, user_id, program_id) FROM stdin;
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.users (id, username, password_hash, name, email, is_active, created_at, role, career_years, skills, gender, company) FROM stdin;
-1	admin	$2b$12$MOem99uBzHMKBaiBeejlgOr160ngQ7ZLw.JKWTP3twQKkcQ8M/XqO	관리자	admin@vibecoding.local	t	2026-09-29 11:16:00.547879+09	admin	\N	\N	\N	\N
-3	user01	$2b$12$jkLIELVMn2XR4IHIPrhE4uTVb4rFr5pb2eUheB8EFuVcB0DWU9VWy	user01	user01@naver.com	t	2026-09-29 14:50:11.725177+09	user	5	Python, Java	male	인터페이스 정보 기술
-2	user	$2b$12$MOem99uBzHMKBaiBeejlgOr160ngQ7ZLw.JKWTP3twQKkcQ8M/XqO	일반사용자	user@vibecoding.local	t	2026-09-29 11:16:00.547879+09	user	3	Flutter	male	비즈테크아이
+COPY public.users (id, username, password_hash, name, email, is_active, created_at, role, career_years, skills, gender, company, home_address) FROM stdin;
+1	admin	$2b$12$MOem99uBzHMKBaiBeejlgOr160ngQ7ZLw.JKWTP3twQKkcQ8M/XqO	관리자	admin@devhaven.local	t	2026-09-29 11:16:00.547879+09	admin	\N	\N	\N	\N	\N
+3	user01	$2b$12$jkLIELVMn2XR4IHIPrhE4uTVb4rFr5pb2eUheB8EFuVcB0DWU9VWy	user01	user01@naver.com	t	2026-09-29 14:50:11.725177+09	user	5	Python, Java	male	코테크시스템	서울 은평구 진관동
+2	user	$2b$12$MOem99uBzHMKBaiBeejlgOr160ngQ7ZLw.JKWTP3twQKkcQ8M/XqO	일반사용자	user@devhaven.local	t	2026-09-29 11:16:00.547879+09	user	3	Flutter	male	비즈테크아이	서울 강남구 테헤란로 152
+4	user02	$2b$12$xQQ07W8zFXuvt59dtXsHW.woW6mbOBvYd8ymJ3O.Qe9rkZoXHWckK	유저02	user02@naver.com	t	2026-09-29 17:03:15.141658+09	user	1	Java, JavaScript, Django	male	\N	서울 은평구
+5	java_dev	$2b$12$MJesqNE/SuofiZ2nmGppVOxIMqnj01PD2l1cM5o.NA4t85SWmGymq	김자바	java@devhaven.local	t	2026-09-29 17:49:38.612549+09	user	5	Java, Spring Boot, MySQL	male	넥스트잡	\N
+6	flutter_dev	$2b$12$ui4pXmePyCpw9OYooHxWSeol2ZFxk7mOVco1kFwpf5iWMYtGE.q1m	이플러터	flutter@devhaven.local	t	2026-09-29 17:49:38.612549+09	user	2	Flutter, Dart, Firebase	female	앱스퀘어	\N
+7	django_dev	$2b$12$P5lr41c.qTrTb3jfP3gI3ua4Okv0JElutcWjFjrfy/2qP5zEj1uNC	박장고	django@devhaven.local	t	2026-09-29 17:49:38.612549+09	user	4	Python, Django, JavaScript, PostgreSQL	male	코드웨이브	\N
 \.
 
 
@@ -535,21 +563,21 @@ SELECT pg_catalog.setval('public.job_postings_id_seq', 6, true);
 -- Name: programs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.programs_id_seq', 5, true);
+SELECT pg_catalog.setval('public.programs_id_seq', 6, true);
 
 
 --
 -- Name: user_programs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.user_programs_id_seq', 24, true);
+SELECT pg_catalog.setval('public.user_programs_id_seq', 46, true);
 
 
 --
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 3, true);
+SELECT pg_catalog.setval('public.users_id_seq', 7, true);
 
 
 --

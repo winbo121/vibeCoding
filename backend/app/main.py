@@ -21,7 +21,7 @@ async def lifespan(_: FastAPI):
     yield
 
 
-app = FastAPI(title="VibeCoding API", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="DevHaven API", version="1.0.0", lifespan=lifespan)
 
 origins = [o.strip() for o in settings.cors_origins.split(",") if o.strip()]
 app.add_middleware(
@@ -56,6 +56,6 @@ async def force_utf8_charset(request: Request, call_next):
 @app.get("/api/health")
 def health():
     return JSONResponse(
-        content={"status": "ok", "service": "vibecoding-api"},
+        content={"status": "ok", "service": "devhaven-api"},
         media_type="application/json; charset=utf-8",
     )

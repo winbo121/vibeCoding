@@ -40,6 +40,7 @@ export const api = {
     return request(`/skills/suggest?${qs.toString()}`)
   },
   skillDictionary: () => request('/skills/dictionary'),
+  skillStats: () => request('/skills/stats'),
 
   listUsers: () => request('/users'),
   createUser: (body) => request('/users', { method: 'POST', body: JSON.stringify(body) }),
@@ -90,9 +91,17 @@ export const api = {
   },
 
   placesConfig: () => request('/places/config'),
-  searchPlaces: (q, size = 10) => {
-    const qs = new URLSearchParams({ q, size: String(size) })
+  searchPlaces: (q, size = 10, mode = 'keyword') => {
+    const qs = new URLSearchParams({ q, size: String(size), mode })
     return request(`/places/search?${qs.toString()}`)
+  },
+  nearbyFood: (params = {}) => {
+    const qs = new URLSearchParams()
+    if (params.x != null) qs.set('x', String(params.x))
+    if (params.y != null) qs.set('y', String(params.y))
+    if (params.radius != null) qs.set('radius', String(params.radius))
+    const query = qs.toString()
+    return request(`/places/nearby-food${query ? `?${query}` : ''}`)
   },
 }
 

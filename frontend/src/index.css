@@ -239,6 +239,280 @@ body::before {
   background: linear-gradient(135deg, #f59e0b, #fb7185);
 }
 
+.skill-dashboard {
+  margin-top: 0.25rem;
+  padding: clamp(1.25rem, 3vw, 1.85rem);
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(ellipse 70% 55% at 100% 0%, rgba(56, 189, 248, 0.16), transparent 55%),
+    radial-gradient(ellipse 55% 45% at 0% 100%, rgba(13, 148, 136, 0.14), transparent 50%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 253, 250, 0.78) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: var(--vc-shadow);
+  animation: vcRise 0.55s ease both;
+}
+
+.dash-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1.25rem 1.75rem;
+  align-items: flex-end;
+  margin-bottom: 1.35rem;
+}
+
+.dash-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--vc-brand-deep);
+}
+
+.dash-head h2 {
+  margin: 0;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: clamp(1.55rem, 3.5vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--vc-ink);
+}
+
+.dash-sub {
+  margin: 0.35rem 0 0;
+  color: #64748b;
+  font-size: 0.92rem;
+}
+
+.dash-kpis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.dash-kpi {
+  min-width: 6.5rem;
+  padding: 0.7rem 0.95rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(20, 33, 61, 0.06);
+}
+
+.dash-kpi.highlight {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.14), rgba(56, 189, 248, 0.12));
+  border-color: rgba(13, 148, 136, 0.18);
+}
+
+.dash-kpi-label {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.dash-kpi strong {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--vc-ink);
+  line-height: 1.2;
+}
+
+.dash-kpi strong em {
+  font-style: normal;
+  color: var(--vc-brand-deep);
+  font-size: 0.92em;
+}
+
+.dash-loading,
+.dash-empty {
+  padding: 1.5rem 0 0.5rem;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.dash-rings {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem 1.25rem;
+  margin-top: 0.35rem;
+}
+
+.dash-ring {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 0.5rem 0.35rem;
+  animation: vcRise 0.55s ease both;
+}
+
+.dash-ring-visual {
+  position: relative;
+  width: 148px;
+  height: 148px;
+}
+
+.dash-ring-track {
+  stroke: rgba(20, 33, 61, 0.08);
+}
+
+.dash-ring-progress {
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: drop-shadow(0 4px 10px rgba(13, 148, 136, 0.18));
+}
+
+.dash-ring-center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.dash-ring-center strong {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.85rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--vc-ink);
+  line-height: 1;
+}
+
+.dash-ring-center span {
+  margin-top: 0.25rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.dash-ring-label {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--vc-ink);
+  text-align: center;
+}
+
+.dash-rank {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(20, 33, 61, 0.08);
+}
+
+.dash-rank-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.85rem;
+  font-weight: 800;
+  color: var(--vc-ink);
+}
+
+.dash-rank-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.dash-rank-list li {
+  animation: vcRise 0.45s ease both;
+}
+
+.dash-rank-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: baseline;
+  margin-bottom: 0.3rem;
+}
+
+.dash-rank-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 700;
+  color: var(--vc-ink);
+}
+
+.dash-rank-idx {
+  display: inline-grid;
+  place-items: center;
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 0.45rem;
+  background: rgba(20, 33, 61, 0.06);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #64748b;
+}
+
+.dash-rank-pct {
+  font-weight: 800;
+  color: var(--vc-brand-deep);
+  white-space: nowrap;
+}
+
+.dash-rank-pct small {
+  margin-left: 0.4rem;
+  font-weight: 600;
+  color: #94a3b8;
+  font-size: 0.82em;
+}
+
+.dash-rank-track {
+  height: 0.58rem;
+  border-radius: 999px;
+  background: rgba(20, 33, 61, 0.07);
+  overflow: hidden;
+}
+
+.dash-rank-fill {
+  height: 100%;
+  border-radius: inherit;
+  transform-origin: left center;
+  animation: skillBarIn 0.75s ease both;
+}
+
+@keyframes skillBarIn {
+  from {
+    transform: scaleX(0.08);
+    opacity: 0.35;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .dash-rings {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .dash-ring {
+    width: min(100%, 220px);
+  }
+}
+
+@media (max-width: 575px) {
+  .dash-kpis {
+    width: 100%;
+  }
+
+  .dash-kpi {
+    flex: 1 1 calc(50% - 0.65rem);
+  }
+}
+
 .vc-card {
   border: 1px solid rgba(255, 255, 255, 0.65);
   border-radius: 1.25rem;
@@ -497,6 +771,57 @@ body::before {
   .company-place-layout {
     grid-template-columns: 1fr;
   }
+}
+
+.vc-nav-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: auto;
+}
+
+.nearby-food-origin {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(90deg, rgba(254, 226, 226, 0.85), rgba(240, 253, 250, 0.9));
+  border: 1px solid rgba(185, 28, 28, 0.18);
+}
+
+.nearby-food-radius-badge {
+  background: #0f766e !important;
+}
+
+.nearby-food-list {
+  max-height: 560px;
+  overflow: auto;
+  border-radius: 0.75rem;
+}
+
+.nearby-food-map-wrap {
+  position: relative;
+  min-height: 420px;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid rgba(15, 118, 110, 0.15);
+  background: #f8fafc;
+}
+
+.nearby-food-map {
+  width: 100%;
+  height: 520px;
+}
+
+.nearby-food-map-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  text-align: center;
+  background: rgba(248, 250, 252, 0.92);
 }
 
 .vc-footer-note {

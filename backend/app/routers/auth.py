@@ -44,6 +44,7 @@ def update_profile(
         user.skills = None
         user.gender = None
         user.company = None
+        user.home_address = None
 
     db.add(user)
     db.commit()

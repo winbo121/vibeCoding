@@ -20,6 +20,7 @@ class User(Base):
     skills: Mapped[str | None] = mapped_column(String(500), nullable=True)
     gender: Mapped[str | None] = mapped_column(String(10), nullable=True)  # male | female
     company: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    home_address: Mapped[str | None] = mapped_column(String(300), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 

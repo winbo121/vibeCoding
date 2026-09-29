@@ -14,7 +14,7 @@ def fetch_jobs() -> list[NormalizedJob]:
             source="sample",
             external_id="saramin-demo-1001",
             title="백엔드 개발자 (Python / FastAPI)",
-            company="바이브테크",
+            company="DevHaven Labs",
             location="서울 강남구",
             experience="경력 2~5년",
             employment_type="정규직",
