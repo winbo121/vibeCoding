@@ -3,6 +3,7 @@ import { Alert, Button, Card, Col, Form, Row, Stack } from 'react-bootstrap'
 import { api } from '../api'
 import { useAuth } from '../auth'
 import SkillAutocomplete from '../components/SkillAutocomplete'
+import CompanyPlacePicker from '../components/CompanyPlacePicker'
 
 export default function Profile() {
   const { user, isAdmin, refreshUser } = useAuth()
@@ -130,10 +131,9 @@ export default function Profile() {
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>현직장</Form.Label>
-                    <Form.Control
+                    <CompanyPlacePicker
                       value={form.company}
-                      onChange={(e) => setForm((f) => ({ ...f, company: e.target.value }))}
-                      placeholder="현재 다니고 있는 회사"
+                      onChange={(company) => setForm((f) => ({ ...f, company }))}
                     />
                   </Form.Group>
                 </>

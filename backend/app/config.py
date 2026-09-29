@@ -1,8 +1,16 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=str(_ENV_FILE),
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
 
     database_url: str = "postgresql+psycopg://postgres:vibeCoding123@localhost:5432/vibecoding"
     api_host: str = "0.0.0.0"
@@ -28,6 +36,11 @@ class Settings(BaseSettings):
     # 기술스택 정규화 AI (선택) — 없으면 내장 한글→영문 사전만 사용
     openai_api_key: str = ""
     openai_model: str = "gpt-4o-mini"
+
+    # 카카오 지도/장소 검색 (https://developers.kakao.com/)
+    # REST: 키워드 검색 서버 프록시 / JS: 프론트 지도 표시(도메인 등록 필요)
+    kakao_rest_api_key: str = ""
+    kakao_js_key: str = ""
 
 
 settings = Settings()

@@ -88,6 +88,12 @@ export const api = {
     if (params.count) qs.set('count', String(params.count))
     return request(`/jobs/sync?${qs.toString()}`, { method: 'POST' })
   },
+
+  placesConfig: () => request('/places/config'),
+  searchPlaces: (q, size = 10) => {
+    const qs = new URLSearchParams({ q, size: String(size) })
+    return request(`/places/search?${qs.toString()}`)
+  },
 }
 
 export async function downloadFile(fileId, filename) {

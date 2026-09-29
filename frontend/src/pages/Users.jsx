@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Alert, Button, Card, Col, Form, Row, Stack, Table } from 'react-bootstrap'
 import { api } from '../api'
 import SkillAutocomplete from '../components/SkillAutocomplete'
+import CompanyPlacePicker from '../components/CompanyPlacePicker'
 
 const empty = {
   username: '',
@@ -228,10 +229,9 @@ export default function Users() {
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>현직장</Form.Label>
-                    <Form.Control
+                    <CompanyPlacePicker
                       value={form.company}
-                      onChange={(e) => setForm((f) => ({ ...f, company: e.target.value }))}
-                      placeholder="현재 다니고 있는 회사"
+                      onChange={(company) => setForm((f) => ({ ...f, company }))}
                     />
                   </Form.Group>
                 </>
