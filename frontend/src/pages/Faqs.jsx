@@ -66,7 +66,10 @@ export default function Faqs() {
     <Row className="g-3">
       <Col lg={4}>
         <Card className="vc-card">
-          <Card.Header>{editingId ? 'FAQ 수정' : 'FAQ 등록'}</Card.Header>
+          <Card.Header>
+            <i className="bi bi-question-circle me-2" />
+            {editingId ? 'FAQ 수정' : 'FAQ 등록'}
+          </Card.Header>
           <Card.Body>
             <Form onSubmit={onSubmit}>
               <Form.Group className="mb-3">
@@ -119,7 +122,10 @@ export default function Faqs() {
       </Col>
       <Col lg={8}>
         <Card className="vc-card">
-          <Card.Header>FAQ 목록</Card.Header>
+          <Card.Header>
+            <i className="bi bi-card-checklist me-2" />
+            FAQ 목록
+          </Card.Header>
           <Card.Body className="p-0">
             {error && (
               <Alert variant="danger" className="m-3">

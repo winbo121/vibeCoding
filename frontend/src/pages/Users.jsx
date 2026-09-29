@@ -85,7 +85,10 @@ export default function Users() {
     <Row className="g-3">
       <Col lg={4}>
         <Card className="vc-card">
-          <Card.Header>{editingId ? '사용자 수정' : '사용자 등록'}</Card.Header>
+          <Card.Header>
+            <i className="bi bi-person-plus me-2" />
+            {editingId ? '사용자 수정' : '사용자 등록'}
+          </Card.Header>
           <Card.Body>
             <Form onSubmit={onSubmit}>
               <Form.Group className="mb-3">
@@ -154,7 +157,10 @@ export default function Users() {
       </Col>
       <Col lg={8}>
         <Card className="vc-card">
-          <Card.Header>사용자 목록</Card.Header>
+          <Card.Header>
+            <i className="bi bi-people me-2" />
+            사용자 목록
+          </Card.Header>
           <Card.Body>
             {error && <Alert variant="danger">{error}</Alert>}
             <div className="table-responsive">

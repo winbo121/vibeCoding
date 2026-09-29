@@ -82,7 +82,10 @@ export default function Board() {
     <Row className="g-3">
       <Col lg={4}>
         <Card className="vc-card">
-          <Card.Header>{editingId ? '게시글 수정' : '게시글 등록'}</Card.Header>
+          <Card.Header>
+            <i className="bi bi-pencil-square me-2" />
+            {editingId ? '게시글 수정' : '게시글 등록'}
+          </Card.Header>
           <Card.Body>
             <Form onSubmit={onSubmit}>
               <Form.Group className="mb-3">
@@ -119,7 +122,10 @@ export default function Board() {
       </Col>
       <Col lg={8}>
         <Card className="vc-card">
-          <Card.Header>게시판 목록</Card.Header>
+          <Card.Header>
+            <i className="bi bi-journal-richtext me-2" />
+            게시판 목록
+          </Card.Header>
           <Card.Body className="p-0">
             {error && (
               <Alert variant="danger" className="m-3">
