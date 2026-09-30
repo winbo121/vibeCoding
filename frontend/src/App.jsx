@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
+import Analyzer from './pages/Analyzer'
 import Board from './pages/Board'
 import BoardDetail from './pages/BoardDetail'
 import Faqs from './pages/Faqs'
@@ -66,6 +67,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <BoardDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="analyzer"
+              element={
+                <ProtectedRoute>
+                  <Analyzer />
                 </ProtectedRoute>
               }
             />

@@ -19,6 +19,13 @@ DEFAULT_PROGRAMS = [
         "sort_order": 20,
     },
     {
+        "code": "ANALYZER",
+        "name": "프로젝트 분석기",
+        "path": "/analyzer",
+        "description": "로컬 프로젝트의 공통 함수·검증·다국어 사용 점검",
+        "sort_order": 22,
+    },
+    {
         "code": "JOBS",
         "name": "입사지원 찾기",
         "path": "/jobs",
@@ -37,7 +44,7 @@ DEFAULT_PROGRAMS = [
 ]
 
 ADMIN_ONLY_CODES = {"USERS", "USER_PROGRAMS"}
-USER_MENU_CODES = {"FAQS", "BOARD", "JOBS", "NEARBY_FOOD"}
+USER_MENU_CODES = {"FAQS", "BOARD", "JOBS", "NEARBY_FOOD", "ANALYZER"}
 
 SAMPLE_FAQS = [
     (
@@ -146,6 +153,7 @@ def _ensure_user_programs(db: Session, user: User, codes: set[str], program_map:
         )
         if not exists:
             db.add(UserProgram(user_id=user.id, program_id=program.id))
+            db.flush()
 
 
 def seed_data(db: Session) -> None:

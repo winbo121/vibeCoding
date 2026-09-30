@@ -95,6 +95,43 @@ export const api = {
     const qs = new URLSearchParams({ q, size: String(size), mode })
     return request(`/places/search?${qs.toString()}`)
   },
+  analyzeProject: async (path, onEvent, signal) => {
+    const res = await fetch(`${API_BASE}/analyzer/scan`, {
+      method: 'POST',
+      signal,
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        ...authHeaders(),
+      },
+      body: JSON.stringify({ path }),
+    })
+    if (!res.ok) {
+      const text = await res.text()
+      let detail = text
+      try {
+        detail = JSON.parse(text)?.detail || text
+      } catch {
+        /* keep text */
+      }
+      throw new Error(typeof detail === 'string' ? detail : '분석에 실패했습니다.')
+    }
+    const reader = res.body?.getReader()
+    if (!reader) throw new Error('분석 스트림을 열 수 없습니다.')
+    const decoder = new TextDecoder()
+    let buffer = ''
+    while (true) {
+      const { value, done } = await reader.read()
+      if (done) break
+      buffer += decoder.decode(value, { stream: true })
+      const chunks = buffer.split('\n\n')
+      buffer = chunks.pop() || ''
+      for (const chunk of chunks) {
+        const line = chunk.split('\n').find((row) => row.startsWith('data:'))
+        if (!line) continue
+        onEvent(JSON.parse(line.slice(5).trim()))
+      }
+    }
+  },
   nearbyFood: (params = {}) => {
     const qs = new URLSearchParams()
     if (params.x != null) qs.set('x', String(params.x))

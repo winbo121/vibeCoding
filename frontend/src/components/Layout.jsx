@@ -14,6 +14,7 @@ const ADMIN_MENU_CODES = new Set(['USERS', 'USER_PROGRAMS'])
 const FALLBACK_MENUS = [
   { code: 'USERS', name: '사용자관리', path: '/users', icon: 'bi-people' },
   { code: 'USER_PROGRAMS', name: '메뉴관리', path: '/user-programs', icon: 'bi-grid-1x2' },
+  { code: 'ANALYZER', name: '프로젝트 분석기', path: '/analyzer', icon: 'bi-diagram-3' },
   { code: 'JOBS', name: '입사지원 찾기', path: '/jobs', icon: 'bi-briefcase' },
   { code: 'NEARBY_FOOD', name: '회사 주변 맛집', path: '/nearby-food', icon: 'bi-cup-hot' },
   { code: 'BOARD', name: '게시판', path: '/board', icon: 'bi-journal-richtext' },
@@ -25,6 +26,7 @@ const MENU_ICONS = {
   USER_PROGRAMS: 'bi-grid-1x2',
   FAQS: 'bi-question-circle',
   BOARD: 'bi-journal-richtext',
+  ANALYZER: 'bi-diagram-3',
   JOBS: 'bi-briefcase',
   NEARBY_FOOD: 'bi-cup-hot',
 }
@@ -49,7 +51,7 @@ export default function Layout() {
   return (
     <div className="app-frame">
       <Navbar expand="lg" className="vc-navbar" sticky="top">
-        <Container>
+        <Container fluid className="px-3 px-lg-4">
           <Navbar.Brand as={NavLink} to="/">
             Dev<span>Haven</span>
           </Navbar.Brand>
@@ -64,7 +66,7 @@ export default function Layout() {
                   </Nav.Link>
                 ))}
             </Nav>
-            <Stack direction="horizontal" gap={2} className="ms-lg-auto flex-wrap">
+            <Stack direction="horizontal" gap={2} className="vc-nav-actions ms-lg-3">
               {isAuthenticated ? (
                 <>
                   <Navbar.Text className="me-1">

@@ -111,11 +111,34 @@ body::before {
   font-weight: 600;
 }
 
+.navbar.vc-navbar .navbar-brand,
+.navbar.vc-navbar .nav-link,
+.navbar.vc-navbar .vc-nav-actions .btn,
+.navbar.vc-navbar .vc-nav-actions .badge {
+  white-space: nowrap;
+}
+
+.navbar.vc-navbar .navbar-collapse {
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.navbar.vc-navbar .navbar-nav {
+  flex-wrap: nowrap;
+}
+
 .navbar.vc-navbar .nav-link {
+  flex-shrink: 0;
   border-radius: 999px;
-  padding: 0.45rem 0.95rem !important;
-  margin-inline: 0.12rem;
+  padding: 0.4rem 0.72rem !important;
+  margin-inline: 0.08rem;
+  font-size: 0.92rem;
   transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.navbar.vc-navbar .vc-nav-actions {
+  flex-shrink: 0;
+  flex-wrap: nowrap;
 }
 
 .navbar.vc-navbar .nav-link:hover {
@@ -899,5 +922,193 @@ body::before {
 @media (max-width: 768px) {
   .navbar.vc-navbar .nav-link {
     margin-bottom: 0.25rem;
+  }
+}
+
+.analyzer-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.analyzer-hero h1,
+.analyzer-functions h2,
+.analyzer-gaps h2 {
+  margin: 0;
+  font-family: "Fraunces", Georgia, serif;
+  letter-spacing: -0.03em;
+  color: var(--vc-ink);
+}
+
+.analyzer-hero h1 {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+}
+
+.analyzer-hero p:last-child,
+.analyzer-functions-head p {
+  margin: 0.35rem 0 0;
+  color: #64748b;
+}
+
+.analyzer-form,
+.analyzer-progress,
+.analyzer-functions,
+.analyzer-gaps {
+  padding: 1.1rem 1.15rem;
+  border-radius: 1.2rem;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 12px 28px rgba(20, 33, 61, 0.06);
+}
+
+.analyzer-form-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.analyzer-form-row .form-control {
+  flex: 1 1 auto;
+  min-width: 0;
+  border-radius: 0.9rem;
+}
+
+.analyzer-form-row .btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding-inline: 1.15rem;
+}
+
+.analyzer-current {
+  margin: 0.55rem 0 0;
+  color: #64748b;
+  font-size: 0.82rem;
+  word-break: break-all;
+}
+
+.analyzer-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.analyzer-metric {
+  padding: 0.85rem 0.95rem;
+  border-radius: 1rem;
+  background: #fff;
+  border: 1px solid rgba(20, 33, 61, 0.06);
+}
+
+.analyzer-metric span,
+.analyzer-metric small {
+  display: block;
+  color: #64748b;
+}
+
+.analyzer-metric span {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.analyzer-metric strong {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 1.35rem;
+  letter-spacing: -0.03em;
+  color: var(--vc-ink);
+}
+
+.analyzer-metric small {
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+}
+
+.analyzer-gaps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.analyzer-gaps ul,
+.analyzer-used {
+  margin: 0.45rem 0 0;
+  padding-left: 1.1rem;
+  color: #334155;
+  font-size: 0.86rem;
+}
+
+.analyzer-functions-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 0.85rem;
+}
+
+.analyzer-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.analyzer-filters button {
+  border: 1px solid rgba(20, 33, 61, 0.08);
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.analyzer-filters button.is-active {
+  background: #134e4a;
+  color: #fff;
+  border-color: #134e4a;
+}
+
+.analyzer-fn-name {
+  font-weight: 800;
+}
+
+.analyzer-fn-meta {
+  margin-left: auto;
+  margin-right: 0.6rem;
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.analyzer-fn-file {
+  margin-bottom: 0.4rem;
+  font-size: 0.84rem;
+  color: #0f766e;
+}
+
+.analyzer-code {
+  margin: 0.7rem 0 0;
+  padding: 0.85rem 1rem;
+  border-radius: 0.85rem;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  overflow: auto;
+  max-height: 320px;
+  white-space: pre;
+}
+
+.analyzer-functions .accordion-button {
+  gap: 0.35rem;
+}
+
+@media (max-width: 900px) {
+  .analyzer-metrics,
+  .analyzer-gaps {
+    grid-template-columns: 1fr;
+  }
+
+  .analyzer-form-row,
+  .analyzer-functions-head {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
