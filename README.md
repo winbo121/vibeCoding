@@ -89,7 +89,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\start-postgres.ps1          #
 
 ---
 
-## 막힐 때
+## 중간에 막힐 때
 
 | 증상 | 조치 |
 |------|------|
