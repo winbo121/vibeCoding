@@ -135,8 +135,13 @@ export default function CompanyPlacePicker({
       const pos = new kakao.maps.LatLng(place.y, place.x)
       const marker = new kakao.maps.Marker({ map, position: pos, title: place.name })
       markersRef.current = [marker]
-      map.setCenter(pos)
-      map.setLevel(3)
+      const focus = () => {
+        if (typeof map.relayout === 'function') map.relayout()
+        map.setCenter(pos)
+        map.setLevel(3)
+      }
+      focus()
+      requestAnimationFrame(focus)
 
       const iw = new kakao.maps.InfoWindow({
         content: `<div style="padding:6px 10px;font-size:12px;"><strong>${place.name}</strong><br/>${
@@ -169,19 +174,20 @@ export default function CompanyPlacePicker({
     }
     if (!config?.search_ready) return
     const selectedVal = placeValue(selected, preset.valueField)
-    if (selectedVal === saved) return
+    if (selectedVal === saved && selected?.x != null && selected?.y != null) return
     if (hydrateRef.current === saved) return
-    hydrateRef.current = saved
     let cancelled = false
     ;(async () => {
       try {
         const rows = await api.searchPlaces(saved, 8, preset.searchMode)
         if (cancelled) return
+        const withCoords = rows.filter((r) => r.x != null && r.y != null)
         const match =
-          rows.find((r) => placeValue(r, preset.valueField) === saved) ||
-          rows.find((r) => r.name === saved || r.address === saved) ||
-          rows[0]
+          withCoords.find((r) => placeValue(r, preset.valueField) === saved) ||
+          withCoords.find((r) => r.name === saved || r.address === saved) ||
+          withCoords[0]
         if (!match) return
+        hydrateRef.current = saved
         setSelected(match)
       } catch {
         /* 복원 실패 시 검색으로 다시 선택 */
