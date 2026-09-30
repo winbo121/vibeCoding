@@ -15,9 +15,9 @@ function formatPct(value) {
   return n % 1 ? n.toFixed(1) : String(Math.round(n))
 }
 
-function RingStat({ skill, percent, count, tone, delay = 0 }) {
-  const size = 148
-  const stroke = 12
+function RingStat({ skill, percent, count, tone, rank, delay = 0 }) {
+  const size = 132
+  const stroke = 10
   const r = (size - stroke) / 2
   const c = 2 * Math.PI * r
   const pct = Math.min(100, Math.max(0, Number(percent) || 0))
@@ -25,6 +25,7 @@ function RingStat({ skill, percent, count, tone, delay = 0 }) {
 
   return (
     <article className={`dash-ring tone-${tone.key}`} style={{ animationDelay: `${delay}s` }}>
+      <span className="dash-ring-rank">{String(rank).padStart(2, '0')}</span>
       <div className="dash-ring-visual">
         <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
           <circle
@@ -100,7 +101,8 @@ export default function Home() {
             <i className="bi bi-cup-hot" />
             개발자 쉼터
           </div>
-          <h1 className="brand-mark mb-0">DevHaven</h1>
+          <h1 className="brand-mark">DevHaven</h1>
+          <p className="lead mb-0">채용 공고, 회사 주변 맛집, 커뮤니티를 한 화면에서.</p>
         </Card.Body>
       </Card>
 
@@ -114,19 +116,34 @@ export default function Home() {
           {!loading && !error && (
             <div className="dash-kpis">
               <div className="dash-kpi">
-                <span className="dash-kpi-label">전체 회원</span>
-                <strong>{stats?.total_members ?? 0}</strong>
+                <span className="dash-kpi-icon">
+                  <i className="bi bi-people" />
+                </span>
+                <div>
+                  <span className="dash-kpi-label">전체 회원</span>
+                  <strong>{stats?.total_members ?? 0}</strong>
+                </div>
               </div>
               <div className="dash-kpi">
-                <span className="dash-kpi-label">스택 등록</span>
-                <strong>{stats?.members_with_skills ?? 0}</strong>
+                <span className="dash-kpi-icon">
+                  <i className="bi bi-code-slash" />
+                </span>
+                <div>
+                  <span className="dash-kpi-label">스택 등록</span>
+                  <strong>{stats?.members_with_skills ?? 0}</strong>
+                </div>
               </div>
               {leader && (
                 <div className="dash-kpi highlight">
-                  <span className="dash-kpi-label">1위</span>
-                  <strong>
-                    {leader.skill} <em>{formatPct(leader.percent)}%</em>
-                  </strong>
+                  <span className="dash-kpi-icon">
+                    <i className="bi bi-trophy" />
+                  </span>
+                  <div>
+                    <span className="dash-kpi-label">가장 많은 스택</span>
+                    <strong>
+                      {leader.skill} <em>{formatPct(leader.percent)}%</em>
+                    </strong>
+                  </div>
                 </div>
               )}
             </div>
@@ -157,6 +174,7 @@ export default function Home() {
                   percent={row.percent}
                   count={row.count}
                   tone={TONES[idx % TONES.length]}
+                  rank={idx + 1}
                   delay={idx * 0.08}
                 />
               ))}
