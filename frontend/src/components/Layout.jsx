@@ -16,8 +16,8 @@ const FALLBACK_MENUS = [
   { code: 'USER_PROGRAMS', name: '메뉴관리', path: '/user-programs', icon: 'bi-grid-1x2' },
   { code: 'JOBS', name: '입사지원 찾기', path: '/jobs', icon: 'bi-briefcase' },
   { code: 'NEARBY_FOOD', name: '회사 주변 맛집', path: '/nearby-food', icon: 'bi-cup-hot' },
-  { code: 'FAQS', name: 'FAQ', path: '/faqs', icon: 'bi-question-circle' },
   { code: 'BOARD', name: '게시판', path: '/board', icon: 'bi-journal-richtext' },
+  { code: 'FAQS', name: 'FAQ', path: '/faqs', icon: 'bi-question-circle' },
 ]
 
 const MENU_ICONS = {

@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.auth import hash_password
 from app.config import settings
 from app.jobs.service import sync_jobs
-from app.models import Faq, JobPosting, Program, User, UserProgram
+from app.models import BoardPost, Faq, JobPosting, Program, User, UserProgram
 
 
 DEFAULT_PROGRAMS = [
@@ -32,12 +32,81 @@ DEFAULT_PROGRAMS = [
         "description": "현직장(관리자는 현위치) 주변 맛집 찾기",
         "sort_order": 28,
     },
-    {"code": "FAQS", "name": "FAQ", "path": "/faqs", "description": "FAQ CRUD", "sort_order": 30},
-    {"code": "BOARD", "name": "게시판", "path": "/board", "description": "게시판 CRUD/파일", "sort_order": 40},
+    {"code": "BOARD", "name": "게시판", "path": "/board", "description": "게시판 CRUD/파일", "sort_order": 30},
+    {"code": "FAQS", "name": "FAQ", "path": "/faqs", "description": "FAQ CRUD", "sort_order": 40},
 ]
 
 ADMIN_ONLY_CODES = {"USERS", "USER_PROGRAMS"}
 USER_MENU_CODES = {"FAQS", "BOARD", "JOBS", "NEARBY_FOOD"}
+
+SAMPLE_FAQS = [
+    (
+        "로그인은 어떻게 하나요?",
+        "관리자는 admin / 1234, 일반 사용자는 user / 1234 입니다. 로그인하면 권한에 맞는 메뉴만 보입니다.",
+        2,
+    ),
+    (
+        "집 주소는 어디에 쓰이나요?",
+        "마이페이지에서 집 주소를 저장하면 채용 공고의 회사 위치와 집 사이 거리·소요 시간을 볼 수 있습니다.",
+        3,
+    ),
+    (
+        "회사 주변 맛집은 어디까지 검색되나요?",
+        "기본 반경은 300m입니다. 일반 사용자는 등록한 회사 위치, 관리자는 현재 위치 기준으로 음식점을 찾습니다.",
+        4,
+    ),
+    (
+        "기술 스택은 어디서 바꾸나요?",
+        "내 정보의 기술 스택을 쉼표로 구분해 저장하면 입사지원 찾기에서 맞는 공고를 우선 보여 줍니다. 예: Python, FastAPI, PostgreSQL",
+        5,
+    ),
+    (
+        "게시판에 파일을 올릴 수 있나요?",
+        "글 작성 시 파일을 첨부할 수 있고, 상세 화면에서 다운로드할 수 있습니다. 본인과 관리자가 글과 첨부를 수정·삭제할 수 있습니다.",
+        6,
+    ),
+    (
+        "관리자만 쓰는 메뉴가 있나요?",
+        "사용자관리와 메뉴관리는 관리자 전용입니다. 입사지원 찾기, 회사 주변 맛집, FAQ, 게시판은 일반 사용자도 이용합니다.",
+        7,
+    ),
+]
+
+SAMPLE_POSTS = [
+    (
+        "admin",
+        "[공지] 개발자 쉼터 이용 안내",
+        "DevHaven에 오신 것을 환영합니다.\n\n"
+        "- 입사지원 찾기: 기술 스택이 맞는 채용 공고\n"
+        "- 회사 주변 맛집: 직장 기준 300m 음식점\n"
+        "- FAQ / 게시판: 이용 질문과 자유 글\n\n"
+        "집 주소를 등록하면 공고마다 집↔회사 거리와 소요 시간이 표시됩니다.",
+    ),
+    (
+        "user",
+        "집 주소 넣고 출퇴근 시간 확인해 봤어요",
+        "마이페이지에 집 주소를 저장한 뒤 입사지원 찾기를 열어 보니, 회사 위치까지 거리와 시간이 같이 나옵니다.\n"
+        "강남·분당 공고를 비교할 때 편해서 다른 분들도 주소부터 넣어 보시면 좋겠습니다.",
+    ),
+    (
+        "admin",
+        "점심은 회사 반경 300m부터",
+        "회사 주변 맛집은 기본 300m입니다. 너무 넓으면 점심시간에 가기 어려운 곳이 섞여서, 걸어갈 수 있는 거리만 남겼습니다.\n"
+        "회사 주소가 비어 있으면 먼저 프로필에 직장을 등록해 주세요.",
+    ),
+    (
+        "user",
+        "FastAPI로 올린 게시글 첨부 메모",
+        "게시글 작성 화면에서 파일을 같이 올리면 상세에서 바로 받을 수 있습니다.\n"
+        "로컬에서는 backend/uploads 에 저장되고, 글 삭제 시 첨부도 함께 지워집니다.",
+    ),
+    (
+        "user",
+        "질문) 기술 스택은 쉼표로 적어도 매칭되나요?",
+        "Python, FastAPI, PostgreSQL 처럼 쉼표로 적었더니 입사지원 찾기에서 겹치는 공고가 위로 왔습니다.\n"
+        "띄어쓰기나 영문 표기만 공고와 비슷하게 맞추면 되는 것 같아요.",
+    ),
+]
 
 
 def _looks_broken(text: str | None) -> bool:
@@ -241,6 +310,18 @@ def seed_data(db: Session) -> None:
                     is_published=True,
                 )
             )
+
+    for question, answer, sort_order in SAMPLE_FAQS:
+        if db.scalar(select(Faq).where(Faq.question == question)):
+            continue
+        db.add(Faq(question=question, answer=answer, sort_order=sort_order, is_published=True))
+
+    author_by_name = {"admin": admin, "user": normal}
+    for username, title, content in SAMPLE_POSTS:
+        if db.scalar(select(BoardPost).where(BoardPost.title == title)):
+            continue
+        author = author_by_name[username]
+        db.add(BoardPost(title=title, content=content, author_id=author.id))
 
     if not db.scalar(select(JobPosting.id).limit(1)):
         sync_jobs(db, source="sample")

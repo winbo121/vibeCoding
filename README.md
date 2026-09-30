@@ -79,7 +79,6 @@ UPLOAD_DIR=uploads
 ## 실행 옵션
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\start-all.ps1 -WithTomcat   # UI http://localhost:8080/vibecoding/
 powershell -ExecutionPolicy Bypass -File .\scripts\start-all.ps1 -NoBrowser
 powershell -ExecutionPolicy Bypass -File .\scripts\start-backend.ps1
 powershell -ExecutionPolicy Bypass -File .\scripts\start-frontend.ps1
