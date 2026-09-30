@@ -1,124 +1,110 @@
 # DevHaven (개발자 쉼터)
 
-Python(FastAPI) + React + PostgreSQL + Tomcat 풀스택 프로젝트입니다.  
-브랜드명: **DevHaven** · 한글명: **개발자 쉼터**
+Python(FastAPI) + React + PostgreSQL 풀스택입니다.  
+브랜드명 **DevHaven** · 한글명 **개발자 쉼터**
 
-## 환경 버전
+| 구성 | 이 PC 기준 |
+|------|------------|
+| Python | 3.14 (3.12+면 됨) |
+| React / Vite | 19 / 8 |
+| Node.js | 20+ |
+| PostgreSQL | 18 (14+면 됨) |
+| Tomcat | 11 (선택, UI만) |
 
-| 구성 | 버전 | 비고 |
-|------|------|------|
-| Python | 3.14.7 | Backend (`backend/.venv`) |
-| React / Vite | React 19 / Vite 8 | Frontend |
-| Node.js | 24.18.0 (기존 설치) | React 빌드/개발 |
-| PostgreSQL | 18.6 | `tools/pgsql` portable + `tools/pgsql-data` |
-| JDK | Temurin 21.0.12 | Tomcat 실행 |
-| Apache Tomcat | 11.0.26 | React 정적 배포(WAS) |
+API는 FastAPI `:8000`, 화면은 Vite `:5173`. Tomcat은 React 빌드를 `:8080`에 올릴 때만 씁니다.
 
-> Tomcat은 Java WAS라서 Python을 직접 실행하지 않습니다.  
-> React 빌드 결과물을 Tomcat에 배포하고, CRUD API는 FastAPI(포트 8000)가 담당합니다.
+---
 
-## 폴더 구조
+## 다른 PC에서 쓰기
 
-```
-vibeCoding/
-  backend/      FastAPI + SQLAlchemy + PostgreSQL CRUD API
-  frontend/     React(Vite) CRUD UI
-  scripts/      실행/배포/DB 복구 스크립트
-  db/           SQL 스키마·시드·덤프
-  START.md      다른 PC: 덤프 복구 + 실행 (먼저 보기)
-  SETUP.md      상세 설치/개별 스크립트
-```
+Git, Python, Node, **실행 중인 PostgreSQL**이 필요합니다.
 
-## 다른 PC에서 빠르게 세팅
-
-**한 장 요약:** [START.md](./START.md)  
-상세: [SETUP.md](./SETUP.md)
+기본 접속: `localhost:5432` / `postgres` / `vibeCoding123` / DB `vibecoding`  
+비밀번호가 다르면 `backend\.env`의 `DATABASE_URL`과 아래 `-PgPassword`를 맞춥니다.
 
 ```powershell
 git clone https://github.com/winbo121/vibeCoding.git
 cd vibeCoding
-powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap-new-pc.ps1   # 덤프 포함
-powershell -ExecutionPolicy Bypass -File .\scripts\start-all.ps1          # 또는 start.cmd
+
+# 최초 1회 — env, venv, npm, db/vibecoding_dump.sql 복구
+powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap-new-pc.ps1
+
+# 매번 — API + 프론트 (또는 start.cmd 더블클릭)
+powershell -ExecutionPolicy Bypass -File .\scripts\start-all.ps1
 ```
 
-DB만 복구할 때 (현재 기준 전체 덤프 권장):
+- UI: http://localhost:5173/vibecoding/
+- API: http://localhost:8000/docs
+- 로그인: `admin` / `1234` (관리자), `user` / `1234` (일반)
+
+`bootstrap-new-pc.ps1`이 하는 일: `backend\.env` 복사 → Python venv + requirements → `npm install` → **전체 덤프 복구**.
+
+이미 떠 있는 PostgreSQL·8000·5173은 `start-all`이 건너뜁니다. 열린 PowerShell 창(API / Frontend)은 닫지 마세요.
+
+---
+
+## DB
+
+| 파일 | 용도 |
+|------|------|
+| `db/vibecoding_dump.sql` | 스키마+데이터 전체 (다른 PC 동기화용) |
+| `db/00_create_database.sql` | DB 생성 |
+| `db/schema.sql` / `db/seed.sql` | 최소 초기화 |
 
 ```powershell
+# 덤프만 다시
 powershell -ExecutionPolicy Bypass -File .\scripts\restore-db.ps1 -UseFullDump
-# 또는 최소 스키마+시드
+
+# 비밀번호가 다를 때
+powershell -ExecutionPolicy Bypass -File .\scripts\restore-db.ps1 -UseFullDump -PgPassword "내비밀번호"
+
+# 스키마+시드만
 powershell -ExecutionPolicy Bypass -File .\scripts\restore-db.ps1
+
+# 이 PC에서 덤프 다시 뽑기
+powershell -ExecutionPolicy Bypass -File .\scripts\export-db.ps1
 ```
 
-## DB 접속 정보
+`backend\.env` 예시:
 
-- Host: `localhost`
-- Port: `5432`
-- User: `postgres`
-- Password: `vibeCoding123`
-- Database: `vibecoding`
-
-## 실행 방법
-
-### 1) PostgreSQL 시작
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\start-postgres.ps1
+```env
+DATABASE_URL=postgresql+psycopg://postgres:vibeCoding123@localhost:5432/vibecoding?client_encoding=utf8
+JWT_SECRET=change-me-in-production
+CORS_ORIGINS=http://localhost:5173,http://localhost:8080
+UPLOAD_DIR=uploads
 ```
 
-처음 한 번만 초기화가 필요하면:
+---
+
+## 실행 옵션
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\init-portable-pg.ps1
-```
-
-### 2) Backend (FastAPI)
-
-```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\start-all.ps1 -WithTomcat   # UI http://localhost:8080/vibecoding/
+powershell -ExecutionPolicy Bypass -File .\scripts\start-all.ps1 -NoBrowser
 powershell -ExecutionPolicy Bypass -File .\scripts\start-backend.ps1
-```
-
-- API: http://localhost:8000
-- Swagger: http://localhost:8000/docs
-
-### 3) Frontend 개발 서버
-
-```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\start-frontend.ps1
+powershell -ExecutionPolicy Bypass -File .\scripts\start-postgres.ps1          # 포터블 PG
 ```
 
-- UI: http://localhost:5173
+포터블 PostgreSQL을 처음 쓸 때만 `scripts\init-portable-pg.ps1`.
 
-### 4) Tomcat 배포(선택)
+---
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\deploy-tomcat.ps1
-powershell -ExecutionPolicy Bypass -File .\scripts\start-tomcat.ps1
+## 막힐 때
+
+| 증상 | 조치 |
+|------|------|
+| `psql not found` | PostgreSQL 설치 후 PATH, 또는 `tools\pgsql` |
+| 비밀번호 오류 | `backend\.env`와 restore `-PgPassword`를 같게 |
+| 8000 / 5173 이미 사용 중 | 서버가 떠 있는 상태. 브라우저로 접속 |
+| PostgreSQL 이미 실행 | 그대로 진행. `start-all`은 `:5432`가 열려 있으면 다시 안 켬 |
+
+## 폴더
+
 ```
-
-- Tomcat UI: http://localhost:8080/vibecoding/
-
-## 로그인
-
-- 관리자: `admin` / `1234` → 사용자관리, 메뉴관리, FAQ, 게시판
-- 일반 사용자: `user` / `1234` → FAQ, 게시판만
-- 비로그인: 메인 화면만
-- 로그인 후 메뉴는 권한에 따라 표시됩니다.
-
-## 주요 API
-
-| Method | Path | 설명 |
-|--------|------|------|
-| POST | `/api/auth/login` | 로그인 |
-| GET | `/api/auth/me` | 내 정보 |
-| GET/POST/PUT/DELETE | `/api/users` | 사용자 CRUD |
-| GET/POST/PUT/DELETE | `/api/programs` | 프로그램 CRUD |
-| GET/PUT | `/api/user-programs` | 사용자-메뉴 권한 |
-| GET/POST/PUT/DELETE | `/api/faqs` | FAQ CRUD |
-| GET/POST/PUT/DELETE | `/api/board` | 게시판 CRUD |
-| GET | `/api/board/files/{id}/download` | 첨부 다운로드 |
-
-## 참고
-
-- EDB Windows 설치 프로그램이 환경에서 장시간 멈출 수 있어, 공식 바이너리 ZIP(PostgreSQL 18.6)을 `tools/pgsql`에 구성했습니다.
-- Python/JDK는 winget으로 설치했습니다.
-- Tomcat은 Apache 공식 ZIP을 `tools/apache-tomcat-11.0.26`에 풀어 사용합니다.
+backend/    FastAPI
+frontend/   React (Vite)
+scripts/    bootstrap, start-all, restore/export
+db/         스키마·시드·덤프
+start.cmd   더블클릭 실행
+```
