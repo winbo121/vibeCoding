@@ -25,19 +25,20 @@ vibeCoding/
   frontend/     React(Vite) CRUD UI
   scripts/      실행/배포/DB 복구 스크립트
   db/           SQL 스키마·시드·덤프
-  SETUP.md      다른 PC 설치 가이드
+  START.md      다른 PC: 덤프 복구 + 실행 (먼저 보기)
+  SETUP.md      상세 설치/개별 스크립트
 ```
 
 ## 다른 PC에서 빠르게 세팅
 
-자세한 절차는 [SETUP.md](./SETUP.md) 참고.
+**한 장 요약:** [START.md](./START.md)  
+상세: [SETUP.md](./SETUP.md)
 
 ```powershell
 git clone https://github.com/winbo121/vibeCoding.git
 cd vibeCoding
-powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap-new-pc.ps1
-powershell -ExecutionPolicy Bypass -File .\scripts\start-backend.ps1
-powershell -ExecutionPolicy Bypass -File .\scripts\start-frontend.ps1
+powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap-new-pc.ps1   # 덤프 포함
+powershell -ExecutionPolicy Bypass -File .\scripts\start-all.ps1          # 또는 start.cmd
 ```
 
 DB만 복구할 때 (현재 기준 전체 덤프 권장):

@@ -36,7 +36,6 @@ powershell -ExecutionPolicy Bypass -File (Join-Path $root "scripts\restore-db.ps
 
 Write-Host ""
 Write-Host "Bootstrap complete."
-Write-Host "Next:"
-Write-Host "  1) powershell -ExecutionPolicy Bypass -File .\scripts\start-backend.ps1"
-Write-Host "  2) powershell -ExecutionPolicy Bypass -File .\scripts\start-frontend.ps1"
+Write-Host "Start everything:"
+Write-Host "  powershell -ExecutionPolicy Bypass -File .\scripts\start-all.ps1"
 Write-Host "Login: admin/1234 or user/1234"

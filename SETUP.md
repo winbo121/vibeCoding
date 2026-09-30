@@ -1,5 +1,7 @@
 # 다른 PC에서 DevHaven(개발자 쉼터) 세팅하기
 
+> **빠른 경로(덤프 + 실행):** [START.md](./START.md) — 클론 → bootstrap → `start-all` / `start.cmd`
+
 ## 1. 사전 설치
 
 | 구성 | 권장 |
@@ -57,13 +59,27 @@ psql -U postgres -h localhost -d vibecoding -f .\db\seed.sql
 
 ## 5. 실행
 
+한 번에 시작 (권장):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\start-all.ps1
+```
+
+개별 실행:
+
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\start-backend.ps1
 powershell -ExecutionPolicy Bypass -File .\scripts\start-frontend.ps1
 ```
 
-- Frontend: http://localhost:5173  
+- Frontend: http://localhost:5173/vibecoding/  
 - API Docs: http://localhost:8000/docs  
+
+Tomcat으로 UI를 띄우려면:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\start-all.ps1 -WithTomcat
+```
 
 ## 6. 기본 계정
 
