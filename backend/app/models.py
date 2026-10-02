@@ -141,11 +141,12 @@ class FoodPick(Base):
 
 
 class GameRun(Base):
-    """비행 슈팅 한 판의 점수. 사용자별 합계로 순위를 만든다."""
+    """게임 한 판의 점수. kind로 비행 슈팅과 테트리스 순위를 나눈다."""
 
     __tablename__ = "game_runs"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    kind: Mapped[str] = mapped_column(String(20), default="shooter", server_default="shooter", index=True)
     score: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

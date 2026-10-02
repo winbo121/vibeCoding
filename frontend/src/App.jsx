@@ -13,6 +13,7 @@ import Login from './pages/Login'
 import NearbyFood from './pages/NearbyFood'
 import Profile from './pages/Profile'
 import Shooter from './pages/Shooter'
+import Tetris from './pages/Tetris'
 import UserPrograms from './pages/UserPrograms'
 import Users from './pages/Users'
 
@@ -109,6 +110,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <Shooter />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="tetris"
+              element={
+                <ProtectedRoute>
+                  <Tetris />
                 </ProtectedRoute>
               }
             />

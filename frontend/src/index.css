@@ -1254,7 +1254,14 @@ body::before {
   margin: 0 auto;
 }
 
-.shooter-stage canvas {
+.tetris-stage {
+  position: relative;
+  width: min(100%, 430px);
+  margin: 0 auto;
+}
+
+.shooter-stage canvas,
+.tetris-stage canvas {
   display: block;
   width: 100%;
   height: auto;

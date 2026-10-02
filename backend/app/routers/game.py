@@ -1,6 +1,6 @@
-"""비행 슈팅 점수. 한 판이 끝날 때마다 사용자 점수에 더하고 누적 순위를 돌려줍니다."""
+"""게임 점수. 한 판이 끝날 때마다 사용자 점수에 더하고, 게임별로 누적 순위를 돌려줍니다."""
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -11,12 +11,21 @@ from app.models import GameRun, User
 
 router = APIRouter(prefix="/game", tags=["game"])
 
+KINDS = {"shooter", "tetris"}
+
 
 class ScoreIn(BaseModel):
     score: int = Field(ge=0, le=1_000_000)
+    kind: str = "shooter"
 
 
-def _ranking(db: Session, user: User, limit: int = 20) -> dict:
+def _kind(value: str) -> str:
+    if value not in KINDS:
+        raise HTTPException(status_code=400, detail="지원하지 않는 게임입니다.")
+    return value
+
+
+def _ranking(db: Session, user: User, kind: str, limit: int = 20) -> dict:
     totals = db.execute(
         select(
             GameRun.user_id,
@@ -24,6 +33,7 @@ def _ranking(db: Session, user: User, limit: int = 20) -> dict:
             func.max(GameRun.score),
             func.count(GameRun.id),
         )
+        .where(GameRun.kind == kind)
         .group_by(GameRun.user_id)
         .order_by(func.sum(GameRun.score).desc(), func.max(GameRun.score).desc())
     ).all()
@@ -58,16 +68,21 @@ def _ranking(db: Session, user: User, limit: int = 20) -> dict:
             "best": 0,
             "plays": 0,
         }
-    return {"items": items, "mine": mine}
+    return {"items": items, "mine": mine, "kind": kind}
 
 
 @router.get("/ranking")
-def game_ranking(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    return _ranking(db, user)
+def game_ranking(
+    kind: str = Query(default="shooter"),
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return _ranking(db, user, _kind(kind))
 
 
 @router.post("/scores")
 def submit_score(body: ScoreIn, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    db.add(GameRun(user_id=user.id, score=body.score))
+    kind = _kind(body.kind)
+    db.add(GameRun(user_id=user.id, kind=kind, score=body.score))
     db.commit()
-    return _ranking(db, user)
+    return _ranking(db, user, kind)

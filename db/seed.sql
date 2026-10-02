@@ -25,12 +25,13 @@ INSERT INTO programs (id, code, name, path, description, sort_order, is_active) 
 (5, 'FAQS', 'FAQ', '/faqs', 'FAQ CRUD', 40, TRUE),
 (6, 'BOARD', '게시판', '/board', '게시판 CRUD/파일', 30, TRUE),
 (8, 'CHAT', '챗봇', '/chat', '개발자 쉼터 이용 안내 챗봇', 45, TRUE),
-(9, 'SHOOTER', '비행 슈팅', '/shooter', '비행기로 몬스터를 맞히고 탄을 피하는 게임', 50, TRUE);
+(9, 'SHOOTER', '비행 슈팅', '/shooter', '비행기로 몬스터를 맞히고 탄을 피하는 게임', 50, TRUE),
+(10, 'TETRIS', '테트리스', '/tetris', '블록을 맞춰 줄을 지우는 게임', 55, TRUE);
 
 -- admin: all menus / user: JOBS + NEARBY_FOOD + FAQ + BOARD
 INSERT INTO user_programs (user_id, program_id) VALUES
-(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9),
-(2, 3), (2, 4), (2, 5), (2, 6), (2, 7), (2, 8), (2, 9);
+(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10),
+(2, 3), (2, 4), (2, 5), (2, 6), (2, 7), (2, 8), (2, 9), (2, 10);
 
 INSERT INTO faqs (question, answer, sort_order, is_published) VALUES
 ('DevHaven(개발자 쉼터)이 무엇인가요?', '개발자를 위한 쉼터입니다. 채용·주변 맛집·FAQ·게시판을 한곳에서 이용할 수 있습니다.', 1, TRUE),

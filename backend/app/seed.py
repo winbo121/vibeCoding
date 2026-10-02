@@ -43,10 +43,11 @@ DEFAULT_PROGRAMS = [
     {"code": "FAQS", "name": "FAQ", "path": "/faqs", "description": "FAQ CRUD", "sort_order": 40},
     {"code": "CHAT", "name": "챗봇", "path": "/chat", "description": "개발자 쉼터 이용 안내 챗봇", "sort_order": 45},
     {"code": "SHOOTER", "name": "비행 슈팅", "path": "/shooter", "description": "비행기로 몬스터를 맞히고 탄을 피하는 게임", "sort_order": 50},
+    {"code": "TETRIS", "name": "테트리스", "path": "/tetris", "description": "블록을 맞춰 줄을 지우는 게임", "sort_order": 55},
 ]
 
 ADMIN_ONLY_CODES = {"USERS", "USER_PROGRAMS"}
-USER_MENU_CODES = {"FAQS", "BOARD", "JOBS", "NEARBY_FOOD", "ANALYZER", "CHAT", "SHOOTER"}
+USER_MENU_CODES = {"FAQS", "BOARD", "JOBS", "NEARBY_FOOD", "ANALYZER", "CHAT", "SHOOTER", "TETRIS"}
 
 SAMPLE_FAQS = [
     (
@@ -139,6 +140,8 @@ def ensure_schema(db: Session) -> None:
     db.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS gender VARCHAR(10)"))
     db.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS company VARCHAR(200)"))
     db.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS home_address VARCHAR(300)"))
+    db.execute(text("ALTER TABLE game_runs ADD COLUMN IF NOT EXISTS kind VARCHAR(20) NOT NULL DEFAULT 'shooter'"))
+    db.execute(text("CREATE INDEX IF NOT EXISTS ix_game_runs_kind ON game_runs (kind)"))
     db.commit()
 
 

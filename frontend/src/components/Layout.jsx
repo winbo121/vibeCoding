@@ -21,6 +21,7 @@ const FALLBACK_MENUS = [
   { code: 'FAQS', name: 'FAQ', path: '/faqs', icon: 'bi-question-circle' },
   { code: 'CHAT', name: '챗봇', path: '/chat', icon: 'bi-chat-dots' },
   { code: 'SHOOTER', name: '비행 슈팅', path: '/shooter', icon: 'bi-airplane' },
+  { code: 'TETRIS', name: '테트리스', path: '/tetris', icon: 'bi-grid-3x3' },
 ]
 
 const MENU_ICONS = {
@@ -33,6 +34,7 @@ const MENU_ICONS = {
   NEARBY_FOOD: 'bi-cup-hot',
   CHAT: 'bi-chat-dots',
   SHOOTER: 'bi-airplane',
+  TETRIS: 'bi-grid-3x3',
 }
 
 export default function Layout() {
