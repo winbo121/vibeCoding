@@ -19,6 +19,7 @@ const FALLBACK_MENUS = [
   { code: 'NEARBY_FOOD', name: '회사 주변 맛집', path: '/nearby-food', icon: 'bi-cup-hot' },
   { code: 'BOARD', name: '게시판', path: '/board', icon: 'bi-journal-richtext' },
   { code: 'FAQS', name: 'FAQ', path: '/faqs', icon: 'bi-question-circle' },
+  { code: 'CHAT', name: '챗봇', path: '/chat', icon: 'bi-chat-dots' },
 ]
 
 const MENU_ICONS = {
@@ -29,6 +30,7 @@ const MENU_ICONS = {
   ANALYZER: 'bi-diagram-3',
   JOBS: 'bi-briefcase',
   NEARBY_FOOD: 'bi-cup-hot',
+  CHAT: 'bi-chat-dots',
 }
 
 export default function Layout() {

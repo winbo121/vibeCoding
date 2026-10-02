@@ -58,6 +58,8 @@ export const api = {
       body: JSON.stringify({ program_ids: programIds }),
     }),
 
+  sendChat: (messages) => request('/chat', { method: 'POST', body: JSON.stringify({ messages }) }),
+
   listFaqs: () => request('/faqs'),
   createFaq: (body) => request('/faqs', { method: 'POST', body: JSON.stringify(body) }),
   updateFaq: (id, body) => request(`/faqs/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
@@ -132,6 +134,22 @@ export const api = {
       }
     }
   },
+  foodPicks: () => request('/places/food-picks'),
+  saveFoodPick: (place) =>
+    request('/places/food-picks', {
+      method: 'POST',
+      body: JSON.stringify({
+        id: String(place.id),
+        name: place.name,
+        address: place.address || null,
+        category: place.category || null,
+        url: place.url || null,
+        phone: place.phone || null,
+        x: place.x ?? null,
+        y: place.y ?? null,
+      }),
+    }),
+  deleteFoodPick: (placeId) => request(`/places/food-picks/${encodeURIComponent(placeId)}`, { method: 'DELETE' }),
   nearbyFood: (params = {}) => {
     const qs = new URLSearchParams()
     if (params.x != null) qs.set('x', String(params.x))

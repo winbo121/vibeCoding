@@ -6,10 +6,14 @@ import math
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from pydantic import BaseModel, Field
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 
 from app.auth import get_current_user
 from app.config import settings
-from app.models import User
+from app.database import get_db
+from app.models import FoodPick, User
 
 router = APIRouter(prefix="/places", tags=["places"])
 
@@ -345,3 +349,129 @@ def nearby_food(
         "places": foods,
         "count": len(foods),
     }
+
+
+class FoodPickIn(BaseModel):
+    id: str = Field(min_length=1, max_length=40)
+    name: str = Field(min_length=1, max_length=200)
+    address: str | None = Field(default=None, max_length=300)
+    category: str | None = Field(default=None, max_length=200)
+    url: str | None = Field(default=None, max_length=500)
+    phone: str | None = Field(default=None, max_length=40)
+    x: float | None = None
+    y: float | None = None
+
+
+def popular_food_picks(db: Session, user: User, limit: int = 8) -> dict:
+    """같은 회사(회사 없으면 전체)에서 저장 수가 많은 맛집."""
+    company = (user.company or "").strip()
+    scoped = bool(company) and (user.role or "") != "admin"
+    count_col = func.count(FoodPick.id)
+    stmt = select(
+        FoodPick.place_id,
+        func.max(FoodPick.name),
+        func.max(FoodPick.address),
+        func.max(FoodPick.category),
+        func.max(FoodPick.url),
+        func.max(FoodPick.phone),
+        func.max(FoodPick.x),
+        func.max(FoodPick.y),
+        count_col,
+    ).group_by(FoodPick.place_id)
+    if scoped:
+        stmt = stmt.where(FoodPick.company == company)
+    rows = db.execute(stmt.order_by(count_col.desc(), func.max(FoodPick.name)).limit(limit)).all()
+    saved_ids = set(
+        db.scalars(select(FoodPick.place_id).where(FoodPick.user_id == user.id)).all()
+    )
+    items = [
+        {
+            "id": place_id,
+            "name": name,
+            "address": address,
+            "category": category,
+            "url": url,
+            "phone": phone,
+            "x": x,
+            "y": y,
+            "picks": int(picks or 0),
+            "saved": place_id in saved_ids,
+        }
+        for place_id, name, address, category, url, phone, x, y, picks in rows
+    ]
+    return {
+        "scope": "company" if scoped else "all",
+        "company": company or None,
+        "items": items,
+        "saved_place_ids": sorted(saved_ids),
+    }
+
+
+def popular_food_text(db: Session, user: User) -> str:
+    data = popular_food_picks(db, user, limit=5)
+    items = data["items"]
+    if data["scope"] == "company" and data["company"]:
+        lead = f"「{data['company']}」 동료가 저장한 맛집입니다."
+    else:
+        lead = "지금까지 저장된 맛집 중 많이 고른 곳입니다."
+    if not items:
+        return (
+            f"{lead}\n아직 저장된 맛집이 없습니다. "
+            "회사 주변 맛집 목록에서 저장을 누르면 많이 고른 순으로 모입니다."
+        )
+    lines = [lead]
+    for index, item in enumerate(items, start=1):
+        where = f" · {item['address']}" if item.get("address") else ""
+        lines.append(f"{index}. {item['name']} ({item['picks']}명){where}")
+    lines.append("회사 주변 맛집에서 저장 버튼을 누르면 이 순위에 반영됩니다.")
+    return "\n".join(lines)
+
+
+@router.get("/food-picks")
+def list_food_picks(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    return popular_food_picks(db, user)
+
+
+@router.post("/food-picks")
+def save_food_pick(body: FoodPickIn, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    place_id = body.id.strip()
+    existing = db.scalar(
+        select(FoodPick).where(FoodPick.user_id == user.id, FoodPick.place_id == place_id)
+    )
+    company = (user.company or "").strip() or None
+    if existing:
+        existing.name = body.name.strip()
+        existing.address = (body.address or "").strip() or None
+        existing.category = (body.category or "").strip() or None
+        existing.url = (body.url or "").strip() or None
+        existing.phone = (body.phone or "").strip() or None
+        existing.x = body.x
+        existing.y = body.y
+        if company:
+            existing.company = company
+    else:
+        db.add(
+            FoodPick(
+                user_id=user.id,
+                place_id=place_id,
+                name=body.name.strip(),
+                address=(body.address or "").strip() or None,
+                category=(body.category or "").strip() or None,
+                url=(body.url or "").strip() or None,
+                phone=(body.phone or "").strip() or None,
+                x=body.x,
+                y=body.y,
+                company=company,
+            )
+        )
+    db.commit()
+    return popular_food_picks(db, user)
+
+
+@router.delete("/food-picks/{place_id}")
+def delete_food_pick(place_id: str, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    row = db.scalar(select(FoodPick).where(FoodPick.user_id == user.id, FoodPick.place_id == place_id))
+    if row:
+        db.delete(row)
+        db.commit()
+    return popular_food_picks(db, user)

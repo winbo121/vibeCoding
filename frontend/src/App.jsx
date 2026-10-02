@@ -3,6 +3,7 @@ import { AuthProvider } from './auth'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
 import Analyzer from './pages/Analyzer'
+import Chat from './pages/Chat'
 import Board from './pages/Board'
 import BoardDetail from './pages/BoardDetail'
 import Faqs from './pages/Faqs'
@@ -43,6 +44,14 @@ export default function App() {
               element={
                 <ProtectedRoute adminOnly>
                   <UserPrograms />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="chat"
+              element={
+                <ProtectedRoute>
+                  <Chat />
                 </ProtectedRoute>
               }
             />

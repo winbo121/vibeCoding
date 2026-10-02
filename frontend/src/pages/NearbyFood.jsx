@@ -85,6 +85,8 @@ export default function NearbyFood() {
   const [mapError, setMapError] = useState('')
   const [payload, setPayload] = useState(null)
   const [selected, setSelected] = useState(null)
+  const [picks, setPicks] = useState(null)
+  const [pickBusy, setPickBusy] = useState('')
 
   const mapRef = useRef(null)
   const mapObj = useRef(null)
@@ -95,6 +97,49 @@ export default function NearbyFood() {
   const requestIdRef = useRef(0)
   const geoCacheRef = useRef(null)
   const initialLoadedRef = useRef(false)
+
+  const loadPicks = useCallback(async () => {
+    try {
+      setPicks(await api.foodPicks())
+    } catch {
+      setPicks(null)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (canUse) loadPicks()
+  }, [canUse, loadPicks])
+
+  const savedIds = new Set((picks?.saved_place_ids || []).map(String))
+  const pickCountOf = (placeId) =>
+    picks?.items?.find((item) => String(item.id) === String(placeId))?.picks
+
+  const onToggleSave = async (place, event) => {
+    event.stopPropagation()
+    if (!place?.id || pickBusy) return
+    setPickBusy(String(place.id))
+    setError('')
+    try {
+      const data = savedIds.has(String(place.id))
+        ? await api.deleteFoodPick(place.id)
+        : await api.saveFoodPick(place)
+      setPicks(data)
+    } catch (err) {
+      setError(err.message || '맛집 저장에 실패했습니다.')
+    } finally {
+      setPickBusy('')
+    }
+  }
+
+  const focusPlace = (place) => {
+    if (!place || !payload?.origin) return
+    const current = payload.places || []
+    const match = current.find((item) => String(item.id) === String(place.id))
+    const shown = match || { ...place, distance_m: null }
+    const places = match ? current : [...current, shown]
+    setSelected(shown)
+    showOnMap(payload.origin, places, shown, payload.radius)
+  }
 
   useEffect(() => {
     api
@@ -369,6 +414,37 @@ export default function NearbyFood() {
         </Alert>
       )}
 
+      <div className="nearby-food-rank mb-3">
+        <div className="fw-semibold mb-2">
+          {picks?.scope === 'company' && picks.company
+            ? `「${picks.company}」에서 많이 고른 맛집`
+            : '많이 고른 맛집'}
+        </div>
+        {(picks?.items || []).length === 0 ? (
+          <div className="small text-secondary">목록에서 저장하면 많이 고른 순으로 여기에 모입니다.</div>
+        ) : (
+          <div className="nearby-food-rank-list">
+            {picks.items.map((item, index) => (
+              <button
+                key={item.id}
+                type="button"
+                className="nearby-food-rank-item"
+                onClick={() => focusPlace(item)}
+              >
+                <span className="nearby-food-rank-no">{index + 1}</span>
+                <span className="nearby-food-rank-copy">
+                  <strong>{item.name}</strong>
+                  {item.address ? <span>{item.address}</span> : null}
+                </span>
+                <Badge bg="light" text="dark">
+                  {item.picks}명
+                </Badge>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
       {payload?.origin && (
         <div className="nearby-food-origin mb-3">
           <Badge bg="danger" className="me-2">
@@ -406,13 +482,29 @@ export default function NearbyFood() {
                   showOnMap(payload.origin, payload.places, place, payload.radius)
                 }}
               >
-                <div className="d-flex justify-content-between gap-2">
+                <div className="d-flex justify-content-between align-items-start gap-2">
                   <div className="fw-semibold">{place.name}</div>
-                  {place.distance_m != null && (
-                    <Badge bg="light" text="dark">
-                      {formatDistance(place.distance_m)}
-                    </Badge>
-                  )}
+                  <Stack direction="horizontal" gap={1} className="flex-shrink-0">
+                    {pickCountOf(place.id) ? (
+                      <Badge bg="light" text="dark">
+                        {pickCountOf(place.id)}명
+                      </Badge>
+                    ) : null}
+                    {place.distance_m != null && (
+                      <Badge bg="light" text="dark">
+                        {formatDistance(place.distance_m)}
+                      </Badge>
+                    )}
+                    <Button
+                      size="sm"
+                      variant={savedIds.has(String(place.id)) ? 'success' : 'outline-success'}
+                      className="nearby-food-save"
+                      disabled={!place.id || pickBusy === String(place.id)}
+                      onClick={(event) => onToggleSave(place, event)}
+                    >
+                      {savedIds.has(String(place.id)) ? '저장됨' : '저장'}
+                    </Button>
+                  </Stack>
                 </div>
                 <div className="small text-secondary">{place.address}</div>
                 {place.category && <div className="small text-muted">{place.category}</div>}

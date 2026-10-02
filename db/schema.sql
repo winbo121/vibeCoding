@@ -87,4 +87,23 @@ CREATE TABLE IF NOT EXISTS job_postings (
 );
 CREATE INDEX IF NOT EXISTS ix_job_postings_source ON job_postings (source);
 
+CREATE TABLE IF NOT EXISTS food_picks (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    place_id VARCHAR(40) NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    address VARCHAR(300),
+    category VARCHAR(200),
+    url VARCHAR(500),
+    phone VARCHAR(40),
+    x DOUBLE PRECISION,
+    y DOUBLE PRECISION,
+    company VARCHAR(200),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT uq_food_pick_user_place UNIQUE (user_id, place_id)
+);
+CREATE INDEX IF NOT EXISTS ix_food_picks_user_id ON food_picks (user_id);
+CREATE INDEX IF NOT EXISTS ix_food_picks_place_id ON food_picks (place_id);
+CREATE INDEX IF NOT EXISTS ix_food_picks_company ON food_picks (company);
+
 COMMIT;
