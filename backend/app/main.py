@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse, Response
 
 from app.config import settings
 from app.database import Base, SessionLocal, engine
-from app.routers import analyzer, auth, boards, chat, faqs, jobs, places, programs, skills, users
+from app.routers import analyzer, auth, boards, chat, faqs, game, jobs, places, programs, skills, users
 from app.seed import seed_data
 
 
@@ -42,6 +42,7 @@ app.include_router(skills.router, prefix="/api")
 app.include_router(places.router, prefix="/api")
 app.include_router(analyzer.router, prefix="/api")
 app.include_router(chat.router, prefix="/api")
+app.include_router(game.router, prefix="/api")
 
 
 @app.middleware("http")

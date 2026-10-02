@@ -42,10 +42,11 @@ DEFAULT_PROGRAMS = [
     {"code": "BOARD", "name": "게시판", "path": "/board", "description": "게시판 CRUD/파일", "sort_order": 30},
     {"code": "FAQS", "name": "FAQ", "path": "/faqs", "description": "FAQ CRUD", "sort_order": 40},
     {"code": "CHAT", "name": "챗봇", "path": "/chat", "description": "개발자 쉼터 이용 안내 챗봇", "sort_order": 45},
+    {"code": "SHOOTER", "name": "비행 슈팅", "path": "/shooter", "description": "비행기로 몬스터를 맞히고 탄을 피하는 게임", "sort_order": 50},
 ]
 
 ADMIN_ONLY_CODES = {"USERS", "USER_PROGRAMS"}
-USER_MENU_CODES = {"FAQS", "BOARD", "JOBS", "NEARBY_FOOD", "ANALYZER", "CHAT"}
+USER_MENU_CODES = {"FAQS", "BOARD", "JOBS", "NEARBY_FOOD", "ANALYZER", "CHAT", "SHOOTER"}
 
 SAMPLE_FAQS = [
     (

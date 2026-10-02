@@ -20,6 +20,7 @@ const FALLBACK_MENUS = [
   { code: 'BOARD', name: '게시판', path: '/board', icon: 'bi-journal-richtext' },
   { code: 'FAQS', name: 'FAQ', path: '/faqs', icon: 'bi-question-circle' },
   { code: 'CHAT', name: '챗봇', path: '/chat', icon: 'bi-chat-dots' },
+  { code: 'SHOOTER', name: '비행 슈팅', path: '/shooter', icon: 'bi-airplane' },
 ]
 
 const MENU_ICONS = {
@@ -31,6 +32,7 @@ const MENU_ICONS = {
   JOBS: 'bi-briefcase',
   NEARBY_FOOD: 'bi-cup-hot',
   CHAT: 'bi-chat-dots',
+  SHOOTER: 'bi-airplane',
 }
 
 export default function Layout() {

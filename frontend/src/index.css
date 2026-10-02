@@ -1240,3 +1240,141 @@ body::before {
     align-items: stretch;
   }
 }
+
+.shooter-page {
+  display: grid;
+  grid-template-columns: minmax(320px, 640px) minmax(220px, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.shooter-stage {
+  position: relative;
+  width: min(100%, 640px);
+  margin: 0 auto;
+}
+
+.shooter-stage canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  background: #07111f;
+  outline: none;
+}
+
+.shooter-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  text-align: center;
+  color: #f8fafc;
+  background: rgba(7, 17, 31, 0.62);
+  border-radius: 1rem;
+}
+
+.shooter-overlay-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.shooter-pad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+}
+
+.shooter-pad-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.shooter-fire-hint {
+  align-self: center;
+  color: #0f766e;
+  font-size: 0.84rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.shooter-key {
+  min-width: 4.2rem;
+  border: 1px solid #99f6e4;
+  background: #fff;
+  color: #0f766e;
+  border-radius: 999px;
+  padding: 0.45rem 0.8rem;
+  touch-action: none;
+}
+
+.shooter-rank {
+  padding: 1rem 1.05rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--vc-shadow);
+}
+
+.shooter-rank-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.shooter-rank-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.75rem;
+  background: #f8fafc;
+}
+
+.shooter-rank-list li.is-me {
+  background: #f0fdfa;
+}
+
+.shooter-rank-no {
+  width: 1.4rem;
+  font-weight: 700;
+  color: #0f766e;
+}
+
+.shooter-rank-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.shooter-rank-score {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-weight: 700;
+}
+
+.shooter-rank-score small {
+  font-weight: 500;
+  color: #64748b;
+}
+
+.shooter-rank-empty {
+  color: #64748b;
+  background: transparent !important;
+}
+
+@media (max-width: 900px) {
+  .shooter-page {
+    grid-template-columns: 1fr;
+  }
+}

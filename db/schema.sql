@@ -106,4 +106,12 @@ CREATE INDEX IF NOT EXISTS ix_food_picks_user_id ON food_picks (user_id);
 CREATE INDEX IF NOT EXISTS ix_food_picks_place_id ON food_picks (place_id);
 CREATE INDEX IF NOT EXISTS ix_food_picks_company ON food_picks (company);
 
+CREATE TABLE IF NOT EXISTS game_runs (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    score INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS ix_game_runs_user_id ON game_runs (user_id);
+
 COMMIT;

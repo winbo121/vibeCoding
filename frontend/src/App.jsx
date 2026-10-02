@@ -12,6 +12,7 @@ import Jobs from './pages/Jobs'
 import Login from './pages/Login'
 import NearbyFood from './pages/NearbyFood'
 import Profile from './pages/Profile'
+import Shooter from './pages/Shooter'
 import UserPrograms from './pages/UserPrograms'
 import Users from './pages/Users'
 
@@ -100,6 +101,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <NearbyFood />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="shooter"
+              element={
+                <ProtectedRoute>
+                  <Shooter />
                 </ProtectedRoute>
               }
             />

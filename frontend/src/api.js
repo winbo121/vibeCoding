@@ -150,6 +150,8 @@ export const api = {
       }),
     }),
   deleteFoodPick: (placeId) => request(`/places/food-picks/${encodeURIComponent(placeId)}`, { method: 'DELETE' }),
+  gameRanking: () => request('/game/ranking'),
+  submitGameScore: (score) => request('/game/scores', { method: 'POST', body: JSON.stringify({ score }) }),
   nearbyFood: (params = {}) => {
     const qs = new URLSearchParams()
     if (params.x != null) qs.set('x', String(params.x))
